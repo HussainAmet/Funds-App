@@ -24,7 +24,7 @@ export default function Signin() {
   const login = async (data) => {
     setError('');
     try {
-      const userData = await axios.post(`${config.requestBaseUrl}login`, {phone: data.number})
+      const userData = await axios.get(`${config.requestBaseUrl}get-all-members`, {phone: data.number})
       console.log(userData.data);
       // if (userData.data) {
       //   dispatch(authLogin({userData: userData.data.member.data.auth}));
