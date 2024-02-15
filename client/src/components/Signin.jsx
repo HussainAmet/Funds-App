@@ -24,21 +24,20 @@ export default function Signin() {
   const login = async (data) => {
     setError('');
     try {
-      const userData = await axios.get(`${config.requestBaseUrl}login/${data.number}`)
-      console.log(userData.data);
-      // if (userData.data) {
-      //   dispatch(authLogin({userData: userData.data.member.data.auth}));
-      //   dispatch(getMemberDetails({member: userData.data.member.data}));
-      //   const role = userData.data.member.data.auth.data.role;
-      //   if (role === "host") {
-      //     dispatch(getAllMembersDetails({allMembers: userData.data.members}));
-      //     navigate("/admin/members/members-list");
-      //   } else if (role === "member") {
-      //     navigate("/dashboard/profile");
-      //   } else {
-      //     setError("Phone number not found");
-      //   }
-      // } else setError("Phone number not found");
+      const userData = await axios.post(`${config.requestBaseUrl}login`, {phone: data.number})
+      if (userData.data) {
+        dispatch(authLogin({userData: userData.data.member.data.auth}));
+        dispatch(getMemberDetails({member: userData.data.member.data}));
+        const role = userData.data.member.data.auth.data.role;
+        if (role === "host") {
+          dispatch(getAllMembersDetails({allMembers: userData.data.members}));
+          navigate("/admin/members/members-list");
+        } else if (role === "member") {
+          navigate("/dashboard/profile");
+        } else {
+          setError("Phone number not found");
+        }
+      } else setError("Phone number not found");
     } catch (error) {
       setError(error);
     }
