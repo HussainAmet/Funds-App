@@ -36,7 +36,7 @@ export default function Signin() {
         } else {
           setError("Phone number not found");
         }
-      } else setError("Phone number not found")
+      } else setError("Phone number not found");
     } catch (error) {
       console.log(error);
     }
