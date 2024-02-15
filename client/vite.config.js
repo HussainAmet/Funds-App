@@ -1,26 +1,21 @@
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
-import { createServer } from 'http';
+import { defineConfig, loadEnv  } from 'vite'
+import react from '@vitejs/plugin-react'
 
-const env = loadEnv('all', process.cwd());
-const productionUrl = env.VITE_PRODUCTION_URL || "http://localhost:3001";
+const env = loadEnv(
+    'all',
+    process.cwd()
+);
 
-// Function to set allowed methods
-function allowMethods(req, res, next) {
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  next();
-}
+let productionUrl = env.VITE_PRODUCTION_URL || "http://localhost:3001";
 
+// https://vitejs.dev/config/
 export default defineConfig({
   server: {
     proxy: {
-      "/association-funds": {
-        target: productionUrl,
-        middleware: allowMethods
-      }
+      "/association-funds" : productionUrl,
     },
   },
   plugins: [
     react(),
   ],
-});
+})
