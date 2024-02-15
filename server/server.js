@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
-import express from "express";
+import express, { json } from "express";
 import config from "./config/config.js"
 import { userModel, memberDetailsModel } from "./schemas/index.js";
 
 const app = express();
+const port = config.port || 3001;
 app.use(express.json());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-app.post("/association-funds/login", async (req, res) => {
+app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = req.body.phone;
   try {
     const userData = await userModel.findOne({"data.phone": number})
@@ -31,7 +32,7 @@ app.post("/association-funds/login", async (req, res) => {
   }
 });
 
-app.get("/association-funds/add-member", async (req, res) => {
+app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
   const name = "Murtaza Amet";
   const phone = 1234567890;
   try {
@@ -58,7 +59,7 @@ app.get("/association-funds/add-member", async (req, res) => {
   }
 });
 
-app.get("/association-funds/get-all-members", async (req, res) => {
+app.get(`${config.requestBaseUrl}get-all-members`, async (req, res) => {
   try {
     const members = await memberDetailsModel.find({}, 'data').populate("data.auth", "data")
     res.send(members);
@@ -67,7 +68,7 @@ app.get("/association-funds/get-all-members", async (req, res) => {
   }
 });
 
-app.get("/association-funds/update-member/:userId", async (req, res) => {
+app.get(`${config.requestBaseUrl}update-member/:userId`, async (req, res) => {
   const userId = req.params.userId
   const date = new Date()
   const role = "admin"
@@ -102,7 +103,7 @@ app.get("/association-funds/update-member/:userId", async (req, res) => {
   }
 });
 
-app.get("/association-funds/delete-member/:id", async (req, res) => {
+app.get(`${config.requestBaseUrl}delete-member/:id`, async (req, res) => {
   const id = req.params.id;
   try {
     const response = await userModel.deleteOne({_id: id})
@@ -120,8 +121,8 @@ app.get("/health-check", (req, res) => {
   }
 });
 
-app.listen(config.port, () => {
-  console.log(`http://localhost:${config.port}`);
+app.listen(port, () => {
+  console.log(`http://localhost:${port}`);
 });
 
 // {name: 'Ummehani Cyclewala', savings: 37000,},

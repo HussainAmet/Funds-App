@@ -13,17 +13,18 @@ import axios from "axios"
 import { login as authLogin } from '../store/authSlice';
 import { useDispatch } from 'react-redux'
 import { getAllMembersDetails, getMemberDetails } from '../store/memberDetailsSlice';
+import config from "../config/config"
 
 export default function Signin() {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm()
-  const [error, setError] = useState('');
+  const [error, setError] = useState();
 
   const login = async (data) => {
-    setError('')
+    setError('');
     try {
-      const userData = await axios.post("/association-funds/login", {phone: data.number})
+      const userData = await axios.post(`${config.requestBaseUrl}login`, {phone: data.number})
       if (userData.data) {
         dispatch(authLogin({userData: userData.data.member.data.auth}));
         dispatch(getMemberDetails({member: userData.data.member.data}));
@@ -38,7 +39,7 @@ export default function Signin() {
         }
       } else setError("Phone number not found");
     } catch (error) {
-      console.log(error);
+      setError(error);
     }
     
   }
