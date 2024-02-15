@@ -11,25 +11,26 @@ mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = req.body.phone;
-  try {
-    const userData = await userModel.findOne({"data.phone": number})
-    if (userData) {
-      if (userData.data.role === "host"){
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
-        const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
-        res.send({member, members});
-      } else if (userData.data.role === "member") {
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
-        res.send({member});
-      } else {
-        res.send('');
-      }
-    } else {
-      res.send('');
-    }
-  } catch (error) {
-    throw error
-  }
+  res.send(number);
+  // try {
+  //   const userData = await userModel.findOne({"data.phone": number})
+  //   if (userData) {
+  //     if (userData.data.role === "host"){
+  //       const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
+  //       const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
+  //       res.send({member, members});
+  //     } else if (userData.data.role === "member") {
+  //       const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
+  //       res.send({member});
+  //     } else {
+  //       res.send('');
+  //     }
+  //   } else {
+  //     res.send('');
+  //   }
+  // } catch (error) {
+  //   throw error
+  // }
 });
 
 app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
