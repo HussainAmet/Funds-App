@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 export default defineConfig({
   server: {
     proxy: {
-      "/association-funds" : process.env.PRODUCTION_URL,
+      "/association-funds" : process.env.PRODUCTION_URL || "http://localhost:3001",
     },
   },
   plugins: [
