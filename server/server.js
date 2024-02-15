@@ -9,7 +9,7 @@ app.use(express.json());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-app.get(`${config.requestBaseUrl}login`, async (req, res) => {
+app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = req.body.phone;
   try {
     const userData = await userModel.findOne({"data.phone": number})
