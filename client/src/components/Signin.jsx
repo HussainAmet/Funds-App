@@ -39,7 +39,8 @@ export default function Signin() {
         }
       } else setError("Phone number not found");
     } catch (error) {
-      setError(error);
+      console.error("Error occurred:", error);
+      setError(error.message || "An error occurred.");
     }
     
   }
