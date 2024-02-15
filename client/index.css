@@ -1,0 +1,25 @@
+input{
+    outline: none;
+    width: 87%;
+}
+.tab{
+    color: #9DA8B7;
+    font-weight: 600;
+    width: 100%;
+    padding: 10px 12px;
+    margin: 6px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    margin-left: 10px;
+}
+.tabFocus{
+    background-color: #DAE2ED;
+    color: #434D5B;
+}
+.tab:hover{
+    background-color: #DAE2ED;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
