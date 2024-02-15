@@ -5,7 +5,7 @@ import { userModel, memberDetailsModel } from "./schemas/index.js";
 
 const app = express();
 const port = config.port || 3001;
-
+app.use(express.json());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
