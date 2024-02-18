@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import express from "express";
 import config from "./config/config.js"
 import { userModel, memberDetailsModel } from "./schemas/index.js";
+import cors from "cors";
 
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
+app.use(cors());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
