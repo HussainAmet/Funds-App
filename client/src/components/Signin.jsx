@@ -31,6 +31,8 @@ export default function Signin() {
         const role = userData.data.member.data.auth.data.role;
         if (role === "host") {
           dispatch(getAllMembersDetails({allMembers: userData.data.members}));
+          const token = userData.data.token;
+          window.localStorage.setItem('token', token);
           navigate("/admin/members/members-list");
         } else if (role === "member") {
           navigate("/dashboard/profile");

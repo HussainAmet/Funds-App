@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
-import express, { json } from "express";
+import express from "express";
 import config from "./config/config.js"
 import { userModel, memberDetailsModel } from "./schemas/index.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
+
+const JWT_SECRET = "asdnandfhebvabcncjerbvbvrbvrvenvjvnnrvhueirvwn][{}ncMdckaufbsfdnfk]dkavdokvvorjmakLfnfnjffkj";
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
@@ -14,13 +18,16 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   try {
     const userData = await userModel.findOne({"data.phone": number})
     if (userData) {
+      let token = "";
       if (userData.data.role === "host"){
         const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
         const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
-        res.send({member, members});
+        token = jwt.sign({ phone: userData.phone }, JWT_SECRET);
+        res.send({member, members, token});
       } else if (userData.data.role === "member") {
         const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
-        res.send({member});
+        token = jwt.sign({ phone: userData.phone }, JWT_SECRET);
+        res.send({member, token});
       } else {
         res.send('');
       }
