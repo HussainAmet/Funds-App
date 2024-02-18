@@ -22,9 +22,10 @@ export default function Signin() {
   const [error, setError] = useState();
 
   const login = async (data) => {
+    let jwt_token = "asdnandfhebvabcncjerbvbvrbvrvenvjvnnrvhueirvwn][{}ncMdckaufbsfdnfk]dkavdokvvorjmakLfnfnjffkj"
     setError('');
     try {
-      const userData = await axios.post(`${config.requestBaseUrl}login`, {phone: data.number}, {headers: {'content-type': 'application/json',},})
+      const userData = await axios.post(`${config.requestBaseUrl}login`, {phone: data.number, token: jwt_token}, {headers: {'content-type': 'application/json',},})
       if (userData.data) {
         dispatch(authLogin({userData: userData.data.member.data.auth}));
         dispatch(getMemberDetails({member: userData.data.member.data}));
