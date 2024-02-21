@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import express from "express";
 import config from "./config/config.js"
-import { userModel, memberDetailsModel } from "./schemas/index.js";
+import { userModel, memberDetailsModel, totalSavingsModel } from "./schemas/index.js";
 import cors from "cors";
 
 const app = express();
@@ -14,14 +14,20 @@ mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = req.body.phone;
   try {
-    const userData = await userModel.findOne({"data.phone": number})
+    const userData = await userModel.findOne({"data.phone": number});
     if (userData) {
       if (userData.data.role === "host"){
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
+        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
+          {path: "data.totalSavings"},
+          {path: "data.auth", select: "data"},
+        ]);
         const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
         res.send({member, members});
       } else if (userData.data.role === "member") {
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate("data.auth", "data");
+        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
+          {path: "data.totalSavings"},
+          {path: "data.auth", select: "data"},
+        ]);
         res.send({member});
       } else {
         res.send('');
@@ -35,9 +41,10 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
 });
 
 app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
-  const name = "Murtaza Amet";
-  const phone = 1234567890;
+  const name = "Hussain Amet";
+  const phone = 1234512345;
   try {
+    const totalSavingsId = await totalSavingsModel.findOne({});
     const userData = await userModel.create({
       data: {
         name: name,
@@ -48,7 +55,8 @@ app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
     const newMember = await memberDetailsModel.create({
       data: {
         auth: userData._id,
-        saving: 0,
+        totalSavings: totalSavingsId._id,
+        saving: 3000,
         loanRemaing: 0,
       },
     })

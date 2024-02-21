@@ -3,22 +3,38 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 const style = {
-    width: 400,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 325,
+    height: "fit-content",
+    bgcolor: 'background.paper',
+    boxShadow: 24,
     p: 4,
-    display: 'flex',
+    borderRadius: 3,
+    zIndex: 1000,
+    display: "flex",
     flexDirection: 'column',
-    gap: '20px',
+    gap: '15px',
   };
 
-function AddMember() {
+function AddMember(props) {
     const [memberName, setMemberName] = useState();
     const [memberNumber, setMemberNumber] = useState();
     const { register, handleSubmit, formState: { errors } } = useForm();
+    
+    window.addEventListener('popstate', () => {
+        props.onClose()
+    });
+
+    
 
     return (
-        <div className='d-flex justify-content-center '>
+        <div >
             <Box component="form" sx={style}>
                 {errors.number && (errors.number.type === "minLength" || errors.number.type === "maxLength") && <span className='text-danger mt-1'>Invalid Number</span>}
                 <TextField
@@ -51,6 +67,7 @@ function AddMember() {
                 })}
                 />
                 <Button type='submit' variant="contained" className='fs-6 w-100'>Add New Member</Button>
+                <Link to="/admin/members"><Button variant="contained" className='fs-6 w-100 bg-secondary' onClick={props.onClose}>Cancel</Button></Link>
             </Box>
         </div>
     )

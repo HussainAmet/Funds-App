@@ -37,10 +37,10 @@ const router = createBrowserRouter ([
             path: "members",
             element: <Members />,
             children: [
-              {
-                path: "members-list",
-                element: <MembersList />
-              },
+              // {
+              //   path: "members-list",
+              //   element: <MembersList />
+              // },
               {
                 path: "add-member",
                 element: <AddMember />

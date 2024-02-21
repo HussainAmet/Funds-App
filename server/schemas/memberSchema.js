@@ -13,12 +13,13 @@ const memberSchema = new Schema({
     },
     data: {
         auth: { type: mongoose.Schema.Types.ObjectId, ref: 'authDetails', required: true, },
+        totalSavings: { type: mongoose.Schema.Types.ObjectId, ref: 'totalSavings', required: true, },
         saving: Number,
         loanRemaing: Number,
         loanMonth: String,
         savingDetails: [DetailsSchema],
         loanDetails: [DetailsSchema],
     },
-})
+});
 
 export const memberDetailsModel = mongoose.model("members", memberSchema);

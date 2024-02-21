@@ -12,4 +12,4 @@ const userSchema = new Schema({
     }
 });
 
-export const userModel = mongoose.model("authDetails", userSchema)
+export const userModel = mongoose.model("authDetails", userSchema);
