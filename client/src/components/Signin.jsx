@@ -40,7 +40,8 @@ export default function Signin() {
       } else setError("Phone number not found");
     } catch (error) {
       console.error("Error occurred:", error);
-      setError(error.message || "An error occurred.");
+      if (error.response.status === 404) setError("Member Not Found")
+      else setError("An error occurred.");
     }
     
   }

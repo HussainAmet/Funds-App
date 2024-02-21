@@ -22,27 +22,28 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
           {path: "data.auth", select: "data"},
         ]);
         const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
-        res.send({member, members});
+        res.status(200).send({member, members});
       } else if (userData.data.role === "member") {
         const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
           {path: "data.totalSavings"},
           {path: "data.auth", select: "data"},
         ]);
-        res.send({member});
+        res.status(200).send({member});
       } else {
-        res.send('');
+        res.status(404).send('');
       }
     } else {
-      res.send('');
+      res.status(404).send('');
     }
   } catch (error) {
     throw error
   }
 });
 
-app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
-  const name = "Hussain Amet";
-  const phone = 1234512345;
+app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
+  console.log(req.body.name, req.body.phone);
+  const name = req.body.name;
+  const phone = req.body.phone;
   try {
     const totalSavingsId = await totalSavingsModel.findOne({});
     const userData = await userModel.create({
@@ -56,16 +57,18 @@ app.get(`${config.requestBaseUrl}add-member`, async (req, res) => {
       data: {
         auth: userData._id,
         totalSavings: totalSavingsId._id,
-        saving: 3000,
+        saving: 0,
         loanRemaing: 0,
       },
     })
-    const member = await memberDetailsModel.findOne({ _id: newMember._id }, "data").populate("data.auth", "data")
-    res.send(member.data);
-
+    const member = await memberDetailsModel.findOne({ _id: newMember._id }, "data").populate([
+      {path: "data.totalSavings"},
+      {path: "data.auth", select: "data"},
+    ]);
+    res.status(200).send(member);
   } catch (error) {
-    res.send(error);
-    throw error;
+    res.status(409).send(error);
+    // throw error;
   }
 });
 

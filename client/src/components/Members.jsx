@@ -32,7 +32,6 @@ export default function Members() {
   useEffect(() => {
     setCurrentMemberData(currentMember);
     setMemberData(data);
-    console.log(currentMemberData);
   }, [data, currentMember])
 
   return (

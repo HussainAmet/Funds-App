@@ -14,10 +14,13 @@ const postSlice = createSlice ({
         },
         getAllMembersDetails: (state, action) => {
             state.allMembersDetails = action.payload.allMembers
-        }
+        },
+        addMember: (state, action) => {
+            state.allMembersDetails.push(action.payload.newMember)
+        },
     }
 })
 
-export const { getMemberDetails, getAllMembersDetails } = postSlice.actions;
+export const { getMemberDetails, getAllMembersDetails, addMember } = postSlice.actions;
 
 export default postSlice.reducer;
