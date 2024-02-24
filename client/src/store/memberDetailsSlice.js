@@ -18,9 +18,12 @@ const postSlice = createSlice ({
         addMember: (state, action) => {
             state.allMembersDetails.push(action.payload.newMember)
         },
+        delMember: (state, action) => {
+            state.allMembersDetails = state.allMembersDetails.filter((member) => member.data.auth.data.phone !== action.payload.phone)
+        },
     }
 })
 
-export const { getMemberDetails, getAllMembersDetails, addMember } = postSlice.actions;
+export const { getMemberDetails, getAllMembersDetails, addMember, delMember } = postSlice.actions;
 
 export default postSlice.reducer;

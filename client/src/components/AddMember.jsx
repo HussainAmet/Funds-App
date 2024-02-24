@@ -46,7 +46,7 @@ function AddMember(props) {
             if (newMember.data) {
                 dispatch(addMember({newMember: newMember.data}));
                 navigate("/admin/members");
-                props.onClose()
+                props.onClose("success")
             } else setError("Something went wrong")
         } catch (error) {
             console.error("Error occurred:", error);

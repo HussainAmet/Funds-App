@@ -31,7 +31,7 @@ export default function Signin() {
         const role = userData.data.member.data.auth.data.role;
         if (role === "host") {
           dispatch(getAllMembersDetails({allMembers: userData.data.members}));
-          navigate("/admin/members");
+          navigate("/admin/profile");
         } else if (role === "member") {
           navigate("/dashboard/profile");
         } else {

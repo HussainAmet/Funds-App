@@ -15,7 +15,7 @@ const memberSchema = new Schema({
         auth: { type: mongoose.Schema.Types.ObjectId, ref: 'authDetails', required: true, },
         totalSavings: { type: mongoose.Schema.Types.ObjectId, ref: 'totalSavings', required: true, },
         saving: Number,
-        loanRemaing: Number,
+        loanRemaining: Number,
         loanMonth: String,
         savingDetails: [DetailsSchema],
         loanDetails: [DetailsSchema],

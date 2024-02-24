@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import axios from 'axios';
+import config from '../config/config';
 
-export default function Profile() {
+export default function MemberProfile() {
+  const { id } = useParams();
 
   const [currentMemberData, setCurrentMemberData] = useState([]);
 
-  const currentMember = useSelector((state) => state.member.memberDetails)
-
   useEffect(() => {
-    setCurrentMemberData(currentMember);
-  }, [currentMember]);
+    axios.post(`${config.poductionUrl}${config.requestBaseUrl}get-member-details`, { id })
+    .then((currentMember) => {
+      setCurrentMemberData(currentMember.data.data);
+    });
+  }, [id]);
 
   return (
     <>
+    <Link to="/admin/members">
+      <div className='m-3 text-body-tertiary'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={48} d="M244 400L100 256l144-144M120 256h292"></path></svg>
+        <p className='fw-bold'>Go back</p>
+      </div>
+    </Link>
       <div className='ms-3'>
         <div>
           <p className='m-0 fs-6 text-secondary'>Name</p>
@@ -39,18 +48,13 @@ export default function Profile() {
           </div>
         : ""}
       </div>
-      {
-        currentMemberData?.auth?.data?.role === "host" ?
-        <>
-          <div className='d-flex mb-4 justify-content-around'>
-            <Link to="/admin/profile/details/savings"><Button variant="contained" className='fs-6 w-100' >Savings Details</Button></Link>
-            <Link to="/admin/profile/details/loan"><Button variant="contained" className='fs-6 w-100' >Loan Details</Button></Link>
-          </div>
-          <div className='ms-2 me-2 mb-2 '><Outlet /></div>
-        </>
-        :
-        ""
-      }
+      <div className='d-flex mb-4 justify-content-around'>
+        <Link to={`/member-profile/${id}/details/savings`}><Button variant="contained" className='fs-6 w-100' >Savings Details</Button></Link>
+        <Link to={`/member-profile/${id}/details/loan`}><Button variant="contained" className='fs-6 w-100' >Loan Details</Button></Link>
+      </div>
+      <div className='m-2'>
+        <Outlet/>
+      </div>
     </>        
   )
 }

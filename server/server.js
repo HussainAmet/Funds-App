@@ -41,7 +41,6 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
 });
 
 app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
-  console.log(req.body.name, req.body.phone);
   const name = req.body.name;
   const phone = req.body.phone;
   try {
@@ -68,16 +67,19 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
     res.status(200).send(member);
   } catch (error) {
     res.status(409).send(error);
-    // throw error;
   }
 });
 
-app.get(`${config.requestBaseUrl}get-all-members`, async (req, res) => {
+app.post(`${config.requestBaseUrl}get-member-details`, async (req, res) => {
+  const id = req.body.id
   try {
-    const members = await memberDetailsModel.find({}, 'data').populate("data.auth", "data")
-    res.send(members);
+    const member = await memberDetailsModel.findOne({ _id: id }, 'data').populate([
+      {path: "data.totalSavings"},
+      {path: "data.auth", select: "data"},
+    ]);
+    res.status(200).send(member);
   } catch (error) {
-    throw error;
+    res.status(400).send(error);
   }
 });
 
@@ -92,7 +94,6 @@ app.get(`${config.requestBaseUrl}update-member/:userId`, async (req, res) => {
       },
       {
         "metaData.lastUpdated": date,
-        "metaData.created": date,
         "data.userId": userId,
         "data.role": role,
         "data.saving": saving || "",
@@ -116,13 +117,16 @@ app.get(`${config.requestBaseUrl}update-member/:userId`, async (req, res) => {
   }
 });
 
-app.get(`${config.requestBaseUrl}delete-member/:id`, async (req, res) => {
+app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) => {
+  const phone = req.params.phone;
   const id = req.params.id;
+  console.log(phone, id);
   try {
-    const response = await userModel.deleteOne({_id: id})
-    res.send(response);
+    const authResponse = await userModel.deleteOne({'data.phone': phone})
+    const memberResponse = await memberDetailsModel.deleteOne({_id: id})
+    res.status(200).send({authResponse, memberResponse});
   } catch (error) {
-    throw error;
+    res.status(400).send(error);
   }
 });
 
