@@ -7,7 +7,7 @@ import Signin from "./Signin";
 import UserDashboard from "./UserDashboard";
 import AddMember from "./AddMember";
 import MemberProfile from "./MemberProfile";
-import UpdateDetails from "./updateDetails";
+import UpdateDetails from "./UpdateDetails";
 import AuthLayout from "./AuthLayout";
 
 export { Header, Admin, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout }
