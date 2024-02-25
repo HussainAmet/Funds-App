@@ -81,19 +81,20 @@ function UpdateDetails() {
                 navigate('/login')
             }
         } catch (error) {
-            setError(error.response.data);
+            setTimeout(() => {
+                setError(error.response.data);
+            }, 5000);
         }
     }
 
     useEffect(() => {
-        setError('')
         const timezone = 'Asia/Kolkata';
         const date = moment.tz(timezone);
         setDate(date.format());
         setYear(date.year());
         setMonth(date.format('MMMM'));
         setMemberData(userData);
-    }, [what, userData, handleChange])
+    }, [userData, handleChange])
 
     return (
         <>
