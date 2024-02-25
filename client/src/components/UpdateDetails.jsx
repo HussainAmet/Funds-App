@@ -82,19 +82,18 @@ function UpdateDetails() {
             }
         } catch (error) {
             setError(error.response.data);
-            setMemberName('')
-            setAmount('')
         }
     }
 
     useEffect(() => {
+        setError('')
         const timezone = 'Asia/Kolkata';
         const date = moment.tz(timezone);
         setDate(date.format());
         setYear(date.year());
         setMonth(date.format('MMMM'));
         setMemberData(userData);
-    }, [userData, handleChange])
+    }, [what, userData, handleChange])
 
     return (
         <>
