@@ -81,8 +81,9 @@ function UpdateDetails() {
                 navigate('/login')
             }
         } catch (error) {
+            setError(error.response.data);
             setTimeout(() => {
-                setError(error.response.data);
+                setError('');
             }, 5000);
         }
     }
