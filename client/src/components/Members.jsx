@@ -18,8 +18,8 @@ import axios from 'axios';
 import config from '../config/config';
 
 export default function Members() {
-  const [savings, setSavings] = useState()
   const [memberData, setMemberData] = useState([]);
+  const [memberDetails, setMemberDetails] = useState();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
   const [error, setError] = useState('')
@@ -32,7 +32,8 @@ export default function Members() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const data = useSelector((state) => state.member.allMembersDetails)
+  const members = useSelector((state) => state.member.allMembersDetails)
+  const currentMember = useSelector((state) => state.member.memberDetails)
 
   const deleteMember = async (phone, id) => {
     try {
@@ -44,7 +45,7 @@ export default function Members() {
           setSuccess("Member Deleted");
           setTimeout(() => {
             setSuccess('');
-          }, 10000)
+          }, 5000);
         } else {
           setError("Something went wrong")
         }
@@ -66,23 +67,22 @@ export default function Members() {
     setIsAddMemberOpen(false);
     if (success === 'success') {
       setSuccess("Member Added")
+      setTimeout(() => {
+        setSuccess('');
+      }, 5000);
     }
   };
 
   useEffect(() => {
-    setMemberData(data);
-    let totalSavings = 0;
-    data?.forEach(member => {
-      totalSavings += member.data.saving;
-    });
-    setSavings(totalSavings);
-  }, [data])
+    setMemberData(members);
+    setMemberDetails(currentMember)
+  }, [members])
 
   return (
     <>
       {isAddMemberOpen && <div className='position-fixed top-0 start-0 w-100 h-100 z-1'></div>}
       <div className='profile-info'>
-        <p className='fs-2 text-center'>Total Savings: {savings}</p>
+        <p className='fs-2 text-center'>Total Savings: {memberDetails?.totalSavings?.totalSavings}</p>
       </div>
       <div className='d-flex w-100 mb-3 d-flex justify-content-around '>
         <input type="text" placeholder='Search Member' className='ms-3 w-50  border-top-0 border-end-0 border-start-0 border-primary' maxLength={50}/>

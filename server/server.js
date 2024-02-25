@@ -57,7 +57,7 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
         auth: userData._id,
         totalSavings: totalSavingsId._id,
         saving: 0,
-        loanRemaing: 0,
+        loanRemaining: 0,
       },
     })
     const member = await memberDetailsModel.findOne({ _id: newMember._id }, "data").populate([
@@ -83,44 +83,135 @@ app.post(`${config.requestBaseUrl}get-member-details`, async (req, res) => {
   }
 });
 
-app.get(`${config.requestBaseUrl}update-member/:userId`, async (req, res) => {
-  const userId = req.params.userId
-  const date = new Date()
-  const role = "admin"
+app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
+  const userId = req.body.id
+  const amount = req.body.amount
+  const year = req.body.year
+  const month = req.body.month
+  const date = req.body.date
   try {
-    const memberUpdate = await memberDetailsModel.findOneAndUpdate(
+    await memberDetailsModel.findOneAndUpdate(
       {
-        "data.userId": userId,
+        _id: userId,
       },
       {
         "metaData.lastUpdated": date,
-        "data.userId": userId,
-        "data.role": role,
-        "data.saving": saving || "",
-        "data.loanRemaing": loanRemaing || "",
-        "data.loanMonth": loanMonth || "",
-        "data.savingDetails.0.amount": savingDetailsAmount || "",
-        "data.savingDetails.0.month": savingDetailsMonth || "",
-        "data.savingDetails.0.year": savingDetailsYear || "",
-        "data.loanDetails.0.amount": loanDetailsAmount || "",
-        "data.loanDetails.0.month": loanDetailsMonth || "",
-        "data.loanDetails.0.year": loanDetailsYear || "",
+        $inc: {
+          "data.saving": amount,
+        },
+        $push: {
+          "data.savingDetails": {
+            amount: amount,
+            month: month,
+            year: year,
+          }
+        }
       },
+    )
+    await totalSavingsModel.findOneAndUpdate(
+      {},
       {
-        returnDocument: 'after',
-        upsert: true,
+        $inc: {
+          "totalSavings": amount,
+        }
       }
     )
-    res.send(memberUpdate);
+    res.status(200).send("ok");
   } catch (error) {
-    res.send(error)
+    res.status(400).send(error)
+  }
+});
+
+app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
+  const userId = req.body.id
+  const amount = req.body.amount
+  const year = req.body.year
+  const month = req.body.month
+  const date = req.body.date
+  try {
+    const member = await memberDetailsModel.findOne({_id: userId,}, 'data')
+    if (member.data.loanRemaining === 0) {
+      res.status(400).send("Member has no loan pending")
+    } else {
+      await memberDetailsModel.findOneAndUpdate(
+        {
+          _id: userId,
+        },
+        {
+          "metaData.lastUpdated": date,
+          $inc: {
+            "data.loanRemaining": -amount,
+          },
+          $push: {
+            "data.loanDetails": {
+              amount: amount,
+              month: month,
+              year: year,
+            }
+          }
+        },
+      )
+      await totalSavingsModel.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            "totalSavings": amount,
+          }
+        }
+      )
+      const updatedMember = await memberDetailsModel.findOne({_id: userId,}, 'data')
+      if (updatedMember.data.loanRemaining === 0) {
+        await memberDetailsModel.findOneAndUpdate(
+          {
+            _id: userId,
+          },
+          {
+            $unset: { 'data.loanDate': 1 }
+          }
+        )
+      }
+      res.status(200).send('ok');
+    }
+  } catch (error) {
+    res.status(400).send(error)
+  }
+});
+
+app.post(`${config.requestBaseUrl}give-loan`, async (req, res) => {
+  const userId = req.body.id
+  const amount = req.body.amount
+  const loanDate = req.body.loanDate
+  const date = req.body.date
+  try {
+    await memberDetailsModel.findOneAndUpdate(
+      {
+        _id: userId,
+      },
+      {
+        "metaData.lastUpdated": date,
+        $inc: {
+          "data.loanRemaining": amount,
+        },
+        "data.loanDate": loanDate,
+      },
+    )
+    await totalSavingsModel.findOneAndUpdate(
+      {},
+      {
+        $inc: {
+          "totalSavings": -amount,
+        }
+      }
+    )
+    res.status(200).send('ok');
+  } catch (error) {
+    res.status(400).send(error)
   }
 });
 
 app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) => {
   const phone = req.params.phone;
   const id = req.params.id;
-  console.log(phone, id);
   try {
     const authResponse = await userModel.deleteOne({'data.phone': phone})
     const memberResponse = await memberDetailsModel.deleteOne({_id: id})

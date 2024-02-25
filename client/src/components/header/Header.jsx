@@ -8,24 +8,35 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../store/memberDetailsSlice';
 
 export default function Header() {
-  const admin = true;
   const navigate = useNavigate();
-
   const [state, setState] = useState(false);
+  const [memberData, setMemberData] = useState()
+
+  const data = useSelector((state) => state.member.memberDetails)
+  const dispatch = useDispatch();
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setState(open);
   };
+
+  const logo = () => {
+    dispatch(logout());
+    navigate('/login')
+  }
+
+  useEffect(() => {
+    setMemberData(data);
+  }, [data])
 
   const list = () => (
     <Box
@@ -34,13 +45,41 @@ export default function Header() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {['Members', 'Add Member','Add Saving', 'Give Loan', 'Add Loan Installment'].map((text) => (
-          <ListItem key={text}>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+          <Link className='text-decoration-none text-body-secondary' to="/admin/profile">
+            <ListItem>
+              <ListItemButton>
+                <ListItemText>My Profile</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link className='text-decoration-none text-body-secondary' to="/admin/members">
+            <ListItem>
+              <ListItemButton>
+                <ListItemText>All Members</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-savings">
+            <ListItem>
+              <ListItemButton>
+                <ListItemText>Add Saving</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link className='text-decoration-none text-body-secondary' to="/admin/update/give-loan">
+            <ListItem>
+              <ListItemButton>
+                <ListItemText>Give Loan</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-loan-installment">
+            <ListItem>
+              <ListItemButton>
+                <ListItemText>Add Loan Installment</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link>
       </List>
     </Box>
   );
@@ -50,7 +89,7 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }} className="mb-4" >
         <AppBar position="static">
           <Toolbar>
-            {admin ?
+            {memberData?.auth?.data?.role === 'host' ?
               <div>
                     <Button onClick={toggleDrawer(true)} sx={{color: 'white', minWidth: 0}}><MenuIcon /></Button>
                     <Drawer
@@ -66,7 +105,7 @@ export default function Header() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Association Funds
               </Typography>
-              <Button color="inherit" onClick={() => {navigate("/login")}}>Logout</Button>
+              <Button color="inherit" onClick={logo}>Logout</Button>
           </Toolbar>
         </AppBar>
       </Box>

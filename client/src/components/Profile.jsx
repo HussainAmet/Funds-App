@@ -32,10 +32,10 @@ export default function Profile() {
           <p className='m-0 fs-6 text-secondary'>Loan Remaining</p>
           <p className='fs-3'>{currentMemberData?.loanRemaining}</p>
         </div> 
-        {currentMemberData.loanMonth ?
+        {currentMemberData.loanDate ?
           <div>
-            <p className='m-0 fs-6 text-secondary'>Loan Month</p>
-            <p className='fs-3'>{currentMemberData?.loanMonth}</p>
+            <p className='m-0 fs-6 text-secondary'>Loan Date</p>
+            <p className='fs-3'>{currentMemberData?.loanDate}</p>
           </div>
         : ""}
       </div>

@@ -10,9 +10,8 @@ import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from "axios"
-import { login as authLogin } from '../store/authSlice';
 import { useDispatch } from 'react-redux'
-import { getAllMembersDetails, getMemberDetails } from '../store/memberDetailsSlice';
+import { getAllMembersDetails, getMemberDetails, login } from '../store/memberDetailsSlice';
 import config from "../config/config"
 
 export default function Signin() {
@@ -21,12 +20,12 @@ export default function Signin() {
   const { register, handleSubmit, formState: { errors } } = useForm()
   const [error, setError] = useState();
 
-  const login = async (data) => {
+  const log = async (data) => {
     setError('');
     try {
       const userData = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, {phone: data.number})
       if (userData.data) {
-        dispatch(authLogin({userData: userData.data.member.data.auth}));
+        dispatch(login());
         dispatch(getMemberDetails({member: userData.data.member.data}));
         const role = userData.data.member.data.auth.data.role;
         if (role === "host") {
@@ -65,7 +64,7 @@ export default function Signin() {
         </Typography>
         {error && <span className='text-danger mt-1'>{error}</span>}
         {errors.number && (errors.number.type === "minLength" || errors.number.type === "maxLength") && <span className='text-danger mt-1'>Invalid Number</span>}
-        <Box component="form" onSubmit={handleSubmit(login)} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(log)} sx={{ mt: 1 }}>
           <TextField
             type='number'
             onInput={(e) => {e.target.value = e.target.value.replace(/[^0-9]/g, '');}}
@@ -78,6 +77,7 @@ export default function Signin() {
             autoComplete="phone"
             onWheel={(e) => e.target.blur()}
             {...register("number", {
+              required: true,
               maxLength: { value: 10, message: "max" },
               minLength: { value: 10, message: "min" },
             })}

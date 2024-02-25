@@ -2,22 +2,34 @@ import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Admin, Details, Members, Profile, Signin, UserDashboard, AddMember, MembersList, MemberProfile } from "./components"
+import { Admin, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout } from "./components"
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 
 const router = createBrowserRouter ([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <AuthLayout>
+        <App />
+      </AuthLayout>
+    ),
     children: [
       {
         path: "/login",
-        element: <Signin />
+        element: (
+          <AuthLayout>
+            <Signin />
+          </AuthLayout>
+        )
       },
       {
         path: "/dashboard",
-        element: <UserDashboard />,
+        element: (
+          <AuthLayout>
+            <UserDashboard />
+          </AuthLayout>
+        ),
         children: [
           {
             path: "details/:of",
@@ -31,7 +43,11 @@ const router = createBrowserRouter ([
       },
       {
         path: "/admin",
-        element: <Admin />,
+        element: (
+          <AuthLayout>
+            <Admin />
+          </AuthLayout>
+        ),
         children: [
           {
             path: "profile",
@@ -54,22 +70,18 @@ const router = createBrowserRouter ([
             ]
           },
           {
-            path: "add-savings",
-            element: <Members />
-          },
-          {
-            path: "give-loan",
-            element: <Members />
-          },
-          {
-            path: "add-loan-installment",
-            element: <Members />
+            path: "update/:what",
+            element: <UpdateDetails />
           },
         ]
       },
       {
         path: "/member-profile/:id",
-        element: <MemberProfile />,
+        element: (
+          <AuthLayout>
+            <MemberProfile />
+          </AuthLayout>
+        ),
         children: [
           {
             path: "details/:of",

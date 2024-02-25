@@ -6,7 +6,8 @@ import Profile from "./Profile";
 import Signin from "./Signin";
 import UserDashboard from "./UserDashboard";
 import AddMember from "./AddMember";
-import MembersList from "./MembersList";
 import MemberProfile from "./MemberProfile";
+import UpdateDetails from "./updateDetails";
+import AuthLayout from "./AuthLayout";
 
-export { Header, Admin, Details, Members, Profile, Signin, UserDashboard, AddMember, MembersList, MemberProfile }
+export { Header, Admin, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout }
