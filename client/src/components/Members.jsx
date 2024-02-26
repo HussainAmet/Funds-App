@@ -112,7 +112,7 @@ export default function Members() {
                   <td onClick={() => {navigate(`/member-profile/${member._id}`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
                   <td className='text-center'>{member.data.saving}</td>
                   {member.data.auth.data.role !== 'host'?
-                    (member.data.auth.data.phone !== '1234512345'?
+                    (member.data.auth.data.phone !== 1234512345?
                     <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
                       setDelId(member._id);
                       setDelName(member.data.auth.data.name);
