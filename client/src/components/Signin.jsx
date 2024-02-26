@@ -46,6 +46,11 @@ export default function Signin() {
   }
 
   return (
+    <div className="text-black text-center" >
+      <h5>Use these sample phone numbers for login</h5>
+      <h5>Host :- 1234567890</h5>
+      <h5>Member :- 1234512345</h5>
+    </div>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
