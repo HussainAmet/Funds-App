@@ -82,8 +82,9 @@ function UpdateDetails() {
             }
         } catch (error) {
             setError(error.response.data);
-            setMemberName('')
-            setAmount('')
+            setTimeout(() => {
+                setError('');
+            }, 5000);
         }
     }
 
