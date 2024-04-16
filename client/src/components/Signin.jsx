@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import CircularProgress from '@mui/joy/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from "axios"
@@ -19,8 +20,10 @@ export default function Signin() {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm()
   const [error, setError] = useState();
+  const [loading, setLoading] = useState(false)
 
   const log = async (data) => {
+    setLoading(true)
     setError('');
     try {
       const userData = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, {phone: data.number})
@@ -34,10 +37,15 @@ export default function Signin() {
         } else if (role === "member") {
           navigate("/dashboard/profile");
         } else {
+          setLoading(false)
           setError("Phone number not found");
         }
-      } else setError("Phone number not found");
+      } else {
+        setLoading(false)
+        setError("Phone number not found");
+      }
     } catch (error) {
+      setLoading(false)
       console.error("Error occurred:", error);
       if (error.response.status === 404) setError("Member Not Found")
       else setError("An error occurred.");
@@ -56,7 +64,7 @@ export default function Signin() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 4,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -95,7 +103,15 @@ export default function Signin() {
             sx={{ mt: 3, mb: 2 }}
             className='py-3'
           >
-            Sign In
+            {loading?
+              <CircularProgress
+                color="primary"
+                variant="solid"
+                size="sm"
+              />
+            :
+              "Sign In"
+            }
           </Button>
         </Box>
       </Box>
