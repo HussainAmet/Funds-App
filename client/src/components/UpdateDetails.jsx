@@ -81,7 +81,7 @@ function UpdateDetails() {
                 navigate('/login')
             }
         } catch (error) {
-            setError(error.response.data);
+            setError(error.response.data || "Something went wrong");
             setTimeout(() => {
                 setError('');
             }, 5000);

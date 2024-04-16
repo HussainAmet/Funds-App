@@ -185,27 +185,32 @@ app.post(`${config.requestBaseUrl}give-loan`, async (req, res) => {
   const loanDate = req.body.loanDate
   const date = req.body.date
   try {
-    await memberDetailsModel.findOneAndUpdate(
-      {
-        _id: userId,
-      },
-      {
-        "metaData.lastUpdated": date,
-        $inc: {
-          "data.loanRemaining": amount,
+    const totalSavings = await totalSavingsModel.findOne({})
+    if (totalSavings.totalSavings < amount) {
+      res.status(400).send("Total savings are not that much")
+    } else {
+      await memberDetailsModel.findOneAndUpdate(
+        {
+          _id: userId,
         },
-        "data.loanDate": loanDate,
-      },
-    )
-    await totalSavingsModel.findOneAndUpdate(
-      {},
-      {
-        $inc: {
-          "totalSavings": -amount,
+        {
+          "metaData.lastUpdated": date,
+          $inc: {
+            "data.loanRemaining": amount,
+          },
+          "data.loanDate": loanDate,
+        },
+      )
+      await totalSavingsModel.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            "totalSavings": -amount,
+          }
         }
-      }
-    )
-    res.status(200).send('ok');
+      )
+      res.status(200).send('ok');
+    }
   } catch (error) {
     res.status(400).send(error)
   }
