@@ -31,15 +31,17 @@ export default function Details() {
             axios.post(`${config.poductionUrl}${config.requestBaseUrl}get-member-details`, { id })
             .then((currentMember) => {
                 setCurrentMemberData(currentMember.data.data);
-                const startYear = currentMember.data.data.savingDetails[0].year;
-                const endYear = currentMember.data.data.savingDetails[currentMember.data.data.savingDetails.length-1].year;
                 let demoYears = []
                 if (of === 'savings' && currentMember.data.data.savingDetails.length !== 0) {
+                    const startYear = currentMember.data.data.savingDetails[0].year;
+                    const endYear = currentMember.data.data.savingDetails[currentMember.data.data.savingDetails.length-1].year;
                     for (let y = startYear; y < endYear+1; y++) {
                         demoYears.push(y)
                     }
                     setYears(demoYears)
                 } else if (of === 'loan' && currentMember.data.data.loanDetails.length !== 0) {
+                    const startYear = currentMember.data.data.loanDetails[0].year;
+                    const endYear = currentMember.data.data.loanDetails[currentMember.data.data.loanDetails.length-1].year;
                     for (let y = startYear; y < endYear+1; y++) {
                         demoYears.push(y)
                     }
@@ -50,16 +52,17 @@ export default function Details() {
             });
         } else {
             setCurrentMemberData(data)
-            setYears([])
-            const startYear = data?.savingDetails[0]?.year;
-            const endYear = data?.savingDetails[data.savingDetails.length-1]?.year;
             let demoYears = []
             if (of === 'savings' && data.savingDetails.length !== 0) {
+                const startYear = data?.savingDetails[0].year;
+                const endYear = data?.savingDetails[data.savingDetails.length-1].year;
                 for (let y = startYear; y < endYear+1; y++) {
                     demoYears.push(y)
                 }
                 setYears(demoYears)
             } else if (of === 'loan' && data.loanDetails.length !== 0) {
+                const startYear = data?.loanDetails[0]?.year;
+                const endYear = data?.loanDetails[data.loanDetails.length-1].year;
                 for (let y = startYear; y < endYear+1; y++) {
                     demoYears.push(y)
                 }
@@ -114,7 +117,7 @@ export default function Details() {
                                     </tr>
                                 ))
                             :
-                                currentMemberData?.loanDetails?.map((loanDetail) => (
+                                currentMemberData?.loanDetails.map((loanDetail) => (
                                     <tr key={loanDetail._id}>
                                         <td className='text-center'>{loanDetail.year}</td>
                                         <td className='text-center'>{loanDetail.month}</td>

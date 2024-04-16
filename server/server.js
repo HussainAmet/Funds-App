@@ -131,7 +131,9 @@ app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
   try {
     const member = await memberDetailsModel.findOne({_id: userId,}, 'data')
     if (member.data.loanRemaining === 0) {
-      res.status(400).send("Member has no loan pending")
+      res.status(400).send("Member has no loan pending");
+    } else if (member.data.loanRemaining < amount) {
+      res.status(400).send("Entered amount is geater than loan remaining")
     } else {
       await memberDetailsModel.findOneAndUpdate(
         {
@@ -213,9 +215,22 @@ app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) 
   const phone = req.params.phone;
   const id = req.params.id;
   try {
-    const authResponse = await userModel.deleteOne({'data.phone': phone})
-    const memberResponse = await memberDetailsModel.deleteOne({_id: id})
-    res.status(200).send({authResponse, memberResponse});
+    const member = await memberDetailsModel.findOne({_id: id})
+    if (member.data.loanRemaining > 0) {
+      res.status(400).send("Member has loan pending")
+    } else {
+      await totalSavingsModel.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            "totalSavings": -member.data.saving,
+          }
+        }
+      )
+      const authResponse = await userModel.deleteOne({'data.phone': phone})
+      const memberResponse = await memberDetailsModel.deleteOne({_id: id})
+      res.status(200).send({authResponse, memberResponse, saving: member.data.saving});
+    }
   } catch (error) {
     res.status(400).send(error);
   }
@@ -232,15 +247,3 @@ app.get("/health-check", (req, res) => {
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });
-
-// {name: 'Ummehani Cyclewala', savings: 37000,},
-// {name: 'Fatema Amet', savings: 37000,},
-// {name: 'Shabnam Amet', savings: 37000,},
-// {name: 'Sakina Khilona', savings: 37000,},
-// {name: 'Tasneem Rassa', savings: 37000,},
-// {name: 'Jumana Amet', savings: 37000,},
-// {name: 'Tasneem Bhadsora', savings: 37000,},
-// {name: 'Rashida Pamalpur', savings: 37000,},
-// {name: 'Jumana Gadi Saaz', savings: 37000,},
-// {name: 'Shabana Amet', savings: 37000,},
-// {name: 'Munira Amet', savings: 37000,},
