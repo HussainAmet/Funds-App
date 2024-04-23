@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CircularProgress from '@mui/joy/CircularProgress';
 import { useNavigate } from 'react-router-dom';
@@ -22,19 +19,20 @@ export default function Signin() {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false)
 
-  const log = async (data) => {
-    setLoading(true)
-    setError('');
+  const logIn = async (data) => {
     try {
       const userData = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, {phone: data.number})
       if (userData.data) {
+        console.log("userData.data", userData.data);
         dispatch(login());
         dispatch(getMemberDetails({member: userData.data.member.data}));
         const role = userData.data.member.data.auth.data.role;
-        if (role === "host") {
+        if (role.includes('host')) {
           dispatch(getAllMembersDetails({allMembers: userData.data.members}));
+          localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
           navigate("/admin/profile");
-        } else if (role === "member") {
+        } else if (role.includes('member')) {
+          localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
           navigate("/dashboard/profile");
         } else {
           setLoading(false)
@@ -50,34 +48,36 @@ export default function Signin() {
       if (error.response.status === 404) setError("Member Not Found")
       else setError("An error occurred.");
     }
-    
+    setTimeout(() => {
+      setError('')
+    }, 3000)
   }
+
+  const log = async (data) => {
+    setLoading(true)
+    setError('');
+    logIn(data);
+  }
+
+  useEffect(() => {
+    const data = {number: localStorage.phone};
+    if (data.number) {
+      log(data)
+    }
+  }, [])
 
   return (
     <>
-    <div className="text-black text-center" >
-      <h5>Use these sample phone numbers for login</h5>
-      <h5>Host :- 1234567890</h5>
-      <h5>Member :- 1234512345</h5>
-    </div>
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 4,
+          marginTop: '100px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: '#0d6efd' }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        {error && <span className='text-danger mt-1'>{error}</span>}
-        {errors.number && (errors.number.type === "minLength" || errors.number.type === "maxLength") && <span className='text-danger mt-1'>Invalid Number</span>}
         <Box component="form" onSubmit={handleSubmit(log)} sx={{ mt: 1 }}>
           <TextField
             type='number'
@@ -96,12 +96,17 @@ export default function Signin() {
               minLength: { value: 10, message: "min" },
             })}
           />
+          <div className='d-flex flex-column ' style={{width: '309.92px'}}>
+            {error && <span className='text-danger mt-1 '>{error}</span>}
+            {errors.number && (errors.number.type === "minLength" || errors.number.type === "maxLength") && <span className='text-danger mt-1'>Invalid Number</span>}
+          </div>
           <Button
             type='submit'
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             className='py-3'
+            disabled={loading}
           >
             {loading?
               <CircularProgress

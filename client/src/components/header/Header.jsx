@@ -31,6 +31,7 @@ export default function Header() {
 
   const logo = () => {
     dispatch(logout());
+    localStorage.removeItem('phone')
     navigate('/login')
   }
 
@@ -45,41 +46,41 @@ export default function Header() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-          <Link className='text-decoration-none text-body-secondary' to="/admin/profile">
-            <ListItem>
-              <ListItemButton>
-                <ListItemText>My Profile</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>
-          <Link className='text-decoration-none text-body-secondary' to="/admin/members">
-            <ListItem>
-              <ListItemButton>
-                <ListItemText>All Members</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>
-          <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-savings">
-            <ListItem>
-              <ListItemButton>
-                <ListItemText>Add Saving</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>
-          <Link className='text-decoration-none text-body-secondary' to="/admin/update/give-loan">
-            <ListItem>
-              <ListItemButton>
-                <ListItemText>Give Loan</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>
-          <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-loan-installment">
-            <ListItem>
-              <ListItemButton>
-                <ListItemText>Add Loan Installment</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </Link>
+        <Link className='text-decoration-none text-body-secondary' to="/admin/profile">
+          <ListItem>
+            <ListItemButton>
+              <ListItemText>Home</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link className='text-decoration-none text-body-secondary' to="/admin/members">
+          <ListItem>
+            <ListItemButton>
+              <ListItemText>All Members</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-savings">
+          <ListItem>
+            <ListItemButton>
+              <ListItemText>Add Saving</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link className='text-decoration-none text-body-secondary' to="/admin/update/give-loan">
+          <ListItem>
+            <ListItemButton>
+              <ListItemText>Give Loan</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-loan-installment">
+          <ListItem>
+            <ListItemButton>
+              <ListItemText>Add Loan Installment</ListItemText>
+            </ListItemButton>
+          </ListItem>
+        </Link>
       </List>
     </Box>
   );
@@ -89,7 +90,7 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }} className="mb-4" >
         <AppBar position="static">
           <Toolbar>
-            {memberData?.auth?.data?.role === 'host' ?
+            {memberData?.auth?.data?.role.includes('host') ?
               <div>
                     <Button onClick={toggleDrawer(true)} sx={{color: 'white', minWidth: 0}}><MenuIcon /></Button>
                     <Drawer
@@ -105,7 +106,7 @@ export default function Header() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Association Funds
               </Typography>
-              <Button color="inherit" onClick={logo}>Logout</Button>
+              {memberData?.auth?.data?.role? <Button color="inherit" onClick={logo}>Logout</Button> : ''}
           </Toolbar>
         </AppBar>
       </Box>

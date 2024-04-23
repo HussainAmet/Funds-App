@@ -45,8 +45,8 @@ function AddMember(props) {
             const newMember = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}add-member`, {name: data.memberName, phone: data.phone});
             if (newMember.data) {
                 dispatch(addMember({newMember: newMember.data}));
-                navigate("/admin/members");
                 props.onClose("success")
+                navigate("/admin/members");
             } else setError("Something went wrong")
         } catch (error) {
             console.error("Error occurred:", error);

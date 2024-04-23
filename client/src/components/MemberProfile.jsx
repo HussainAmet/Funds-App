@@ -18,11 +18,10 @@ export default function MemberProfile() {
 
   return (
     <>
-      <Link to="/admin/members" className='w-fit d-block '>
-    <div className='m-3 text-body-tertiary'>
-        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={48} d="M244 400L100 256l144-144M120 256h292"></path></svg>
-        <p className='fw-bold'>Go back</p>
-    </div>
+      <Link to="/admin/members" className='w-fit d-block text-body-tertiary'>
+        <div className='m-3'>
+            <p className='fw-semibold fs-4'>Back</p>
+        </div>
       </Link>
       <div className='ms-3'>
         <div>

@@ -16,14 +16,14 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   try {
     const userData = await userModel.findOne({"data.phone": number});
     if (userData) {
-      if (userData.data.role === "host"){
+      if (userData.data.role.includes("host")){
         const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
           {path: "data.totalSavings"},
           {path: "data.auth", select: "data"},
         ]);
         const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
         res.status(200).send({member, members});
-      } else if (userData.data.role === "member") {
+      } else if (userData.data.role.includes("member")) {
         const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
           {path: "data.totalSavings"},
           {path: "data.auth", select: "data"},
@@ -49,7 +49,7 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
       data: {
         name: name,
         phone: phone,
-        role: "member",
+        role: ["member"],
       }
     })
     const newMember = await memberDetailsModel.create({

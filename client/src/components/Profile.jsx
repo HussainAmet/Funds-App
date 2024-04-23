@@ -40,7 +40,7 @@ export default function Profile() {
         : ""}
       </div>
       {
-        currentMemberData?.auth?.data?.role === "host" ?
+        currentMemberData?.auth?.data?.role.includes("host") ?
         <>
           <div className='d-flex mb-4 justify-content-around'>
             <Link to="/admin/profile/details/savings"><Button variant="contained" className='fs-6 w-100' >Savings Details</Button></Link>
