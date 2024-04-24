@@ -19,11 +19,12 @@ function UpdateDetails() {
     const [memberName, setMemberName] = useState('');
     const [memberData, setMemberData] = useState([]);
     const [date, setDate] = useState()
-    const [year, setYear] = useState()
-    const [month, setMonth] = useState()
+    const [year, setYear] = useState('')
+    const [month, setMonth] = useState('')
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
-    const [amount, setAmount] = useState()
+    const [amount, setAmount] = useState('')
+    const [page, setPage] = useState('')
 
     const { register, handleSubmit } = useForm();
     const { what } = useParams();
@@ -89,17 +90,24 @@ function UpdateDetails() {
     }
 
     useEffect(() => {
+        if (what === "add-savings") {
+            setPage("Add Savings")
+        } else if (what === "give-loan") {
+            setPage("Give Loan")
+        } else {
+            setPage("Add Loan Installment")
+        }
         const timezone = 'Asia/Kolkata';
         const date = moment.tz(timezone);
         setDate(date.format());
         setYear(date.year());
         setMonth(date.format('MMMM'));
         setMemberData(userData);
-    }, [userData, handleChange])
+    }, [userData, handleChange, what])
 
     return (
         <>
-            <h2 className='m-4 text-body-tertiary'>{what}</h2>
+            <h2 className='m-4 text-body-tertiary'>{page}</h2>
             <Box component="form" onSubmit={handleSubmit(updateDetails)} sx={{ minWidth: 130, margin: 2 }}>
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Select Member</InputLabel>
