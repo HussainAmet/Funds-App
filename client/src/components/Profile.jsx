@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import config from '../config/config';
 
 export default function Profile() {
   const [currentMemberData, setCurrentMemberData] = useState([]);
 
   const currentMember = useSelector((state) => state.member.memberDetails)
+  const allMembers = useSelector((state) => state.member.allMembersDetails)
 
   const { id } = useParams()
 
   useEffect(() => {
     if (id) {
-      axios.post(`${config.poductionUrl}${config.requestBaseUrl}get-member-details`, { id })
-      .then((currentMember) => {
-        setCurrentMemberData(currentMember.data.data);
-      });
+      setCurrentMemberData(allMembers.find((member) => member._id === id).data);
     } else setCurrentMemberData(currentMember);
     
-  }, [currentMember]);
+  }, [currentMember, allMembers]);
 
   return (
     <>
