@@ -46,7 +46,7 @@ function AddMember(props) {
             if (newMember.data) {
                 dispatch(addMember({newMember: newMember.data}));
                 props.onClose("success")
-                navigate("/admin/members");
+                navigate("/host/members");
             } else setError("Something went wrong")
         } catch (error) {
             console.error("Error occurred:", error);
@@ -90,7 +90,7 @@ function AddMember(props) {
                     })}
                 />
                 <Button type='submit' variant="contained" className='fs-6 w-100'>Add New Member</Button>
-                <Link to="/admin/members"><Button variant="contained" className='fs-6 w-100 bg-secondary' onClick={props.onClose}>Cancel</Button></Link>
+                <Link to="/host/members"><Button variant="contained" className='fs-6 w-100 bg-secondary' onClick={props.onClose}>Cancel</Button></Link>
             </Box>
         </div>
     )

@@ -82,11 +82,11 @@ export default function Members() {
     <>
       {isAddMemberOpen && <div className='position-fixed top-0 start-0 w-100 h-100 z-1'></div>}
       <div className='profile-info'>
-        <p className='fs-2 text-center'>Total Savings: {memberDetails?.totalSavings?.totalSavings}</p>
+        <p className='fs-2 text-center'>Total Balance: {memberDetails?.totalSavings?.totalSavings}</p>
       </div>
       <div className='d-flex w-100 mb-3 d-flex justify-content-around '>
         <input type="text" placeholder='Search Member' className='ms-3 w-50  border-top-0 border-end-0 border-start-0 border-primary' maxLength={50}/>
-        <Link to="/admin/members/add-member"><Button variant="solid" onClick={handleAddMemberClick}>Add Member</Button></Link>
+        <Link to="/host/members/add-member"><Button variant="solid" onClick={handleAddMemberClick}>Add Member</Button></Link>
       </div>
       <Outlet/>
       <div>
@@ -112,7 +112,7 @@ export default function Members() {
                   <td onClick={() => {navigate(`/member-profile/${member._id}`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
                   <td className='text-center'>{member.data.saving}</td>
                   {!member.data.auth.data.role.includes('host')?
-                    (member.data.auth.data.phone !== 1234512345?
+                    (member.data.auth.data.phone !== '1234512345'?
                     <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
                       setDelId(member._id);
                       setDelName(member.data.auth.data.name);

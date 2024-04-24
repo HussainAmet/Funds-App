@@ -12,7 +12,7 @@ app.use(cors());
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
-  const number = req.body.phone;
+  const number = String(req.body.phone);
   try {
     const userData = await userModel.findOne({"data.phone": number});
     if (userData) {
@@ -42,7 +42,7 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
 
 app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
   const name = req.body.name;
-  const phone = req.body.phone;
+  const phone = String(req.body.phone);
   try {
     const totalSavingsId = await totalSavingsModel.findOne({});
     const userData = await userModel.create({
@@ -86,7 +86,7 @@ app.post(`${config.requestBaseUrl}get-member-details`, async (req, res) => {
 app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
   const userId = req.body.id
   const amount = req.body.amount
-  const year = req.body.year
+  const year = String(req.body.year)
   const month = req.body.month
   const date = req.body.date
   try {
@@ -125,7 +125,7 @@ app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
 app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
   const userId = req.body.id
   const amount = req.body.amount
-  const year = req.body.year
+  const year = String(req.body.year)
   const month = req.body.month
   const date = req.body.date
   try {
@@ -217,7 +217,7 @@ app.post(`${config.requestBaseUrl}give-loan`, async (req, res) => {
 });
 
 app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) => {
-  const phone = req.params.phone;
+  const phone = String(req.params.phone);
   const id = req.params.id;
   try {
     const member = await memberDetailsModel.findOne({_id: id})

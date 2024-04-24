@@ -3,7 +3,7 @@ import { mongoose, Schema } from "mongoose";
 const DetailsSchema = new Schema({
     amount: Number,
     month: String,
-    year: Number,
+    year: String,
 })
 
 const memberSchema = new Schema({

@@ -16,6 +16,9 @@ export default function Profile() {
   return (
     <>
       <div className='ms-3'>
+        <div className='profile-info'>
+            <p className='fs-2 text-center'>Total Balance: {currentMember?.totalSavings?.totalSavings}</p>
+        </div>
         <div>
           <p className='m-0 fs-6 text-secondary'>Name</p>
           <p className='fs-3'>{currentMemberData?.auth?.data?.name}</p>
@@ -39,18 +42,6 @@ export default function Profile() {
           </div>
         : ""}
       </div>
-      {
-        currentMemberData?.auth?.data?.role.includes("host") ?
-        <>
-          <div className='d-flex mb-4 justify-content-around'>
-            <Link to="/admin/profile/details/savings"><Button variant="contained" className='fs-6 w-100' >Savings Details</Button></Link>
-            <Link to="/admin/profile/details/loan"><Button variant="contained" className='fs-6 w-100' >Loan Details</Button></Link>
-          </div>
-          <div className='ms-2 me-2 mb-2 '><Outlet /></div>
-        </>
-        :
-        ""
-      }
     </>        
   )
 }

@@ -6,7 +6,7 @@ const userSchema = new Schema({
         lastActivity: { type: Date, default: Date.now, required: true },
     },
     data: {
-        phone: { type: Number, required: true, unique: true },
+        phone: { type: String, required: true, unique: true },
         name: { type: String, required: true },
         role: [{ type: String, enum: ['host', 'member'], required: true }],
     }

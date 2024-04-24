@@ -46,35 +46,35 @@ export default function Header() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <Link className='text-decoration-none text-body-secondary' to="/admin/profile">
+        <Link className='text-decoration-none text-body-secondary' to="host/dashboard/profile">
           <ListItem>
             <ListItemButton>
               <ListItemText>Home</ListItemText>
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link className='text-decoration-none text-body-secondary' to="/admin/members">
+        <Link className='text-decoration-none text-body-secondary' to="host/members">
           <ListItem>
             <ListItemButton>
               <ListItemText>All Members</ListItemText>
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-savings">
+        <Link className='text-decoration-none text-body-secondary' to="host/update/add-savings">
           <ListItem>
             <ListItemButton>
               <ListItemText>Add Saving</ListItemText>
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link className='text-decoration-none text-body-secondary' to="/admin/update/give-loan">
+        <Link className='text-decoration-none text-body-secondary' to="host/update/give-loan">
           <ListItem>
             <ListItemButton>
               <ListItemText>Give Loan</ListItemText>
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link className='text-decoration-none text-body-secondary' to="/admin/update/add-loan-installment">
+        <Link className='text-decoration-none text-body-secondary' to="host/update/add-loan-installment">
           <ListItem>
             <ListItemButton>
               <ListItemText>Add Loan Installment</ListItemText>

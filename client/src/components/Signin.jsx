@@ -23,17 +23,16 @@ export default function Signin() {
     try {
       const userData = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, {phone: data.number})
       if (userData.data) {
-        console.log("userData.data", userData.data);
         dispatch(login());
         dispatch(getMemberDetails({member: userData.data.member.data}));
         const role = userData.data.member.data.auth.data.role;
         if (role.includes('host')) {
           dispatch(getAllMembersDetails({allMembers: userData.data.members}));
           localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
-          navigate("/admin/profile");
+          navigate("/host/dashboard/profile");
         } else if (role.includes('member')) {
           localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
-          navigate("/dashboard/profile");
+          navigate("/member/dashboard/profile");
         } else {
           setLoading(false)
           setError("Phone number not found");

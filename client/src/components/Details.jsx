@@ -24,49 +24,43 @@ export default function Details() {
 
     const data = useSelector((state) => state.member.memberDetails)
 
+    const yearCal = (demoYears, startYear, endYear) => {
+        for (let y = startYear; y < endYear+1; y++) {
+            demoYears.push(y)
+        }
+        setYears(demoYears)
+    }
+
     useEffect(() => {
         setYears([])
         setYear(0);
+        let demoYears = []
         if (id) {
             axios.post(`${config.poductionUrl}${config.requestBaseUrl}get-member-details`, { id })
             .then((currentMember) => {
                 setCurrentMemberData(currentMember.data.data);
-                let demoYears = []
                 if (of === 'savings' && currentMember.data.data.savingDetails.length !== 0) {
                     const startYear = currentMember.data.data.savingDetails[0].year;
                     const endYear = currentMember.data.data.savingDetails[currentMember.data.data.savingDetails.length-1].year;
-                    for (let y = startYear; y < endYear+1; y++) {
-                        demoYears.push(y)
-                    }
-                    setYears(demoYears)
+                    yearCal (demoYears, startYear, endYear)
                 } else if (of === 'loan' && currentMember.data.data.loanDetails.length !== 0) {
                     const startYear = currentMember.data.data.loanDetails[0].year;
                     const endYear = currentMember.data.data.loanDetails[currentMember.data.data.loanDetails.length-1].year;
-                    for (let y = startYear; y < endYear+1; y++) {
-                        demoYears.push(y)
-                    }
-                    setYears(demoYears)
+                    yearCal (demoYears, startYear, endYear)
                 } else {
                     setYears([]);
                 }
             });
         } else {
             setCurrentMemberData(data)
-            let demoYears = []
             if (of === 'savings' && data.savingDetails.length !== 0) {
                 const startYear = data?.savingDetails[0].year;
                 const endYear = data?.savingDetails[data.savingDetails.length-1].year;
-                for (let y = startYear; y < endYear+1; y++) {
-                    demoYears.push(y)
-                }
-                setYears(demoYears)
+                yearCal (demoYears, startYear, endYear)
             } else if (of === 'loan' && data.loanDetails.length !== 0) {
                 const startYear = data?.loanDetails[0]?.year;
                 const endYear = data?.loanDetails[data.loanDetails.length-1].year;
-                for (let y = startYear; y < endYear+1; y++) {
-                    demoYears.push(y)
-                }
-                setYears(demoYears)
+                yearCal (demoYears, startYear, endYear)
             } else {
                 setYears([]);
             }
