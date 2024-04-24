@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Link, Outlet, useParams } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import config from '../config/config';
 
 export default function Profile() {
-
   const [currentMemberData, setCurrentMemberData] = useState([]);
 
   const currentMember = useSelector((state) => state.member.memberDetails)
 
+  const { id } = useParams()
+
   useEffect(() => {
-    setCurrentMemberData(currentMember);
+    if (id) {
+      axios.post(`${config.poductionUrl}${config.requestBaseUrl}get-member-details`, { id })
+      .then((currentMember) => {
+        setCurrentMemberData(currentMember.data.data);
+      });
+    } else setCurrentMemberData(currentMember);
+    
   }, [currentMember]);
 
   return (

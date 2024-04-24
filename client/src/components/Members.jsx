@@ -109,7 +109,7 @@ export default function Members() {
             <tbody>
               {memberData?.map((member) => (
                 <tr key={member._id}>
-                  <td onClick={() => {navigate(`/member-profile/${member._id}`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
+                  <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
                   <td className='text-center'>{member.data.saving}</td>
                   {!member.data.auth.data.role.includes('host')?
                     (member.data.auth.data.phone !== '1234512345'?

@@ -6,92 +6,6 @@ import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, Memb
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 
-// const router = createBrowserRouter ([
-//   {
-//     path: "/",
-//     element: (
-//       <AuthLayout>
-//         <App />
-//       </AuthLayout>
-//     ),
-//     children: [
-//       {
-//         path: "/login",
-//         element: (
-//           <AuthLayout>
-//             <Signin />
-//           </AuthLayout>
-//         )
-//       },
-//       {
-//         path: "/dashboard",
-//         element: (
-//           <AuthLayout>
-//             <UserDashboard />
-//           </AuthLayout>
-//         ),
-//         children: [
-//           {
-//             path: "details/:of",
-//             element: <Details />
-//           },
-//           {
-//             path: "profile",
-//             element: <Profile />
-//           },
-//         ]
-//       },
-//       {
-//         path: "/admin",
-//         element: (
-//           <AuthLayout>
-//             <Admin />
-//           </AuthLayout>
-//         ),
-//         children: [
-//           {
-//             path: "profile",
-//             element: <Profile />,
-//             children: [
-//               {
-//                 path: "details/:of",
-//                 element: <Details />
-//               },
-//             ]
-//           },
-//           {
-//             path: "members",
-//             element: <Members />,
-//             children: [
-//               {
-//                 path: "add-member",
-//                 element: <AddMember />
-//               },
-//             ]
-//           },
-//           {
-//             path: "update/:what",
-//             element: <UpdateDetails />
-//           },
-//         ]
-//       },
-//       {
-//         path: "/member-profile/:id",
-//         element: (
-//           <AuthLayout>
-//             <MemberProfile />
-//           </AuthLayout>
-//         ),
-//         children: [
-//           {
-//             path: "details/:of",
-//             element: <Details />
-//           },
-//         ]
-//       },
-//     ]
-//   }
-// ])
 const router = createBrowserRouter ([
   {
     path: "/",
@@ -176,8 +90,18 @@ const router = createBrowserRouter ([
         ),
         children: [
           {
-            path: "details/:of",
-            element: <Details />
+            path: "dashboard",
+            element: <UserDashboard />,
+            children: [
+              {
+                path: "profile",
+                element: <Profile />
+              },
+              {
+                path: "details/:of",
+                element: <Details />
+              },
+            ]
           },
         ]
       },
