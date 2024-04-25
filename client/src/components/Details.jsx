@@ -10,6 +10,21 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import CircularProgress from '@mui/joy/CircularProgress';
 
+const Months = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December"
+};
+
 export default function Details() {
     const [year, setYear] = useState();
     const [years, setYears] = useState([])
@@ -34,12 +49,12 @@ export default function Details() {
     }
     const findYear = (memberData, demoYears) => {
         if (of === 'savings' && memberData.savingDetails.length !== 0) {
-            const startYear = memberData.savingDetails[0].year;
-            const endYear = memberData.savingDetails[memberData.savingDetails.length-1].year;
+            const startYear = Number(memberData.savingDetails[0].year);
+            const endYear = Number(memberData.savingDetails[memberData.savingDetails.length-1].year);
             yearCal (demoYears, startYear, endYear)
         } else if (of === 'loan' && memberData.loanDetails.length !== 0) {
-            const startYear = memberData.loanDetails[0].year;
-            const endYear = memberData.loanDetails[memberData.loanDetails.length-1].year;
+            const startYear = Number(memberData.loanDetails[0].year);
+            const endYear = Number(memberData.loanDetails[memberData.loanDetails.length-1].year);
             yearCal (demoYears, startYear, endYear)
         } else {
             setYears([]);
@@ -105,7 +120,7 @@ export default function Details() {
                                     currentMemberData?.savingDetails?.map((savingDetail) => (
                                         <tr key={savingDetail._id}>
                                             <td className='text-center'>{savingDetail.year}</td>
-                                            <td className='text-center'>{savingDetail.month}</td>
+                                            <td className='text-center'>{Months[savingDetail.month]}</td>
                                             <td className='text-center'>{savingDetail.amount}</td>
                                         </tr>
                                     ))
@@ -113,7 +128,7 @@ export default function Details() {
                                     currentMemberData?.loanDetails.map((loanDetail) => (
                                         <tr key={loanDetail._id}>
                                             <td className='text-center'>{loanDetail.year}</td>
-                                            <td className='text-center'>{loanDetail.month}</td>
+                                            <td className='text-center'>{Months[loanDetail.month]}</td>
                                             <td className='text-center'>{loanDetail.amount}</td>
                                         </tr>
                                     ))

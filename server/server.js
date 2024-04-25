@@ -11,6 +11,21 @@ app.use(cors());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
+const Months = {
+  "January": 1,
+  "February": 2,
+  "March": 3,
+  "April": 4,
+  "May": 5,
+  "June": 6,
+  "July": 7,
+  "August": 8,
+  "September": 9,
+  "October": 10,
+  "November": 11,
+  "December": 12
+};
+
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = String(req.body.phone);
   try {
@@ -70,24 +85,11 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
   }
 });
 
-app.post(`${config.requestBaseUrl}get-member-details`, async (req, res) => {
-  const id = req.body.id
-  try {
-    const member = await memberDetailsModel.findOne({ _id: id }, 'data').populate([
-      {path: "data.totalSavings"},
-      {path: "data.auth", select: "data"},
-    ]);
-    res.status(200).send(member);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
 app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
   const userId = req.body.id
   const amount = req.body.amount
   const year = String(req.body.year)
-  const month = req.body.month
+  const month = String(req.body.month)
   const date = req.body.date
   try {
     await memberDetailsModel.findOneAndUpdate(
@@ -102,7 +104,7 @@ app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
         $push: {
           "data.savingDetails": {
             amount: amount,
-            month: month,
+            month: Months[month],
             year: year,
           }
         }
@@ -126,7 +128,7 @@ app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
   const userId = req.body.id
   const amount = req.body.amount
   const year = String(req.body.year)
-  const month = req.body.month
+  const month = String(req.body.month)
   const date = req.body.date
   try {
     const member = await memberDetailsModel.findOne({_id: userId,}, 'data')
@@ -147,7 +149,7 @@ app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
           $push: {
             "data.loanDetails": {
               amount: amount,
-              month: month,
+              month: Months[month],
               year: year,
             }
           }
