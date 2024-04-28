@@ -15,6 +15,21 @@ import axios from 'axios';
 import config from '../config/config';
 import { getMemberDetails, getAllMembersDetails, logout } from '../store/memberDetailsSlice';
 
+const Months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
 function UpdateDetails() {
     const [memberName, setMemberName] = useState('');
     const [memberData, setMemberData] = useState([]);
@@ -30,10 +45,6 @@ function UpdateDetails() {
     const { what } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const handleChange = (event) => {
-        setMemberName(event.target.value);
-    };
 
     const currentMember = useSelector((state) => state.member.memberDetails)
     const userData = useSelector((state) => state.member.allMembersDetails)
@@ -90,6 +101,8 @@ function UpdateDetails() {
     }
 
     useEffect(() => {
+        setAmount('')
+        setMemberName('')
         if (what === "add-savings") {
             setPage("Add Savings")
         } else if (what === "give-loan") {
@@ -103,7 +116,7 @@ function UpdateDetails() {
         setYear(date.year());
         setMonth(date.format('MMMM'));
         setMemberData(userData);
-    }, [userData, handleChange, what])
+    }, [userData, what])
 
     return (
         <>
@@ -119,7 +132,7 @@ function UpdateDetails() {
                         id="demo-simple-select"
                         value={memberName}
                         label="Select Member"
-                        onChange={handleChange}
+                        onChange={(event) => setMemberName(event.target.value)}
                     >
                         {memberData.map((member) => (
                             <MenuItem key={member._id} value={member.data.auth.data.name}>{member.data.auth.data.name}</MenuItem>
@@ -128,7 +141,7 @@ function UpdateDetails() {
                 </FormControl>
                 {error && <span className='fw-semibold text-white mt-2 mb-2 p-2 d-block text-center bg-danger'>{error}</span>}
                 {success && <span className='fw-semibold text-bg-success mt-2 mb-2 p-2 d-block text-center'>{success}</span>}
-                <FormControl sx={{ width: 'fit-content', marginTop: 3, display: 'flex', gap: 3 }}>
+                <FormControl sx={{ width: 'fit-content', marginTop: 3, display: 'flex', flexFlow: 'column', gap: 3 }}>
                     <div className='d-flex gap-4'>
                         <div>
                             <FormLabel>Year</FormLabel>
@@ -140,11 +153,17 @@ function UpdateDetails() {
                         </div>
                         <div>
                             <FormLabel>Month</FormLabel>
-                            <Textarea
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
                                 value={month}
-                                disabled
-                                sx={{ width: '150px' }}
-                            />
+                                onChange={(event) => setMonth(event.target.value)}
+                                sx={{width: '150px', height: "36px" }}
+                            >
+                                {Months.map((month) => (
+                                    <MenuItem key={month} value={month}>{month}</MenuItem>
+                                ))}
+                            </Select>
                         </div>
                     </div>
                     <div>
@@ -155,7 +174,7 @@ function UpdateDetails() {
                             })}
                             onInput={(e) => {e.target.value = e.target.value.replace(/[^0-9]/g, '');}}
                             value={amount}
-                            placeholder={0}
+                            placeholder='0'
                             onChange={(e) => {setAmount(e.target.value)}}
                         />
                     </div>

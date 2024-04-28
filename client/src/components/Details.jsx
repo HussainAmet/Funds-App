@@ -26,9 +26,10 @@ const Months = {
 };
 
 export default function Details() {
-    const [year, setYear] = useState();
+    const [year, setYear] = useState(0);
     const [years, setYears] = useState([])
-    const [currentMemberData, setCurrentMemberData] = useState([]);
+    const [savingDetails, setSavingDetails] = useState([]);
+    const [loanDetails, setLoanDetails] = useState([]);
     const [loading, setLoading] = useState(true)
 
     const allMembers = useSelector((state) => state.member.allMembersDetails)
@@ -37,47 +38,68 @@ export default function Details() {
 
     const handleChange = (event) => {
         setYear(event.target.value);
+        if (event.target.value === 0) {
+            getYear();
+        } else {
+            const detailsData = getYear();
+            let details = []
+            detailsData?.map((detail) => {
+                if (Number(detail.year) === event.target.value) {
+                    details.push(detail)
+                }
+            })
+            setSavingDetails(details)
+        }
     };
 
     const data = useSelector((state) => state.member.memberDetails)
 
-    const yearCal = (demoYears, startYear, endYear) => {
-        for (let y = startYear; y < endYear+1; y++) {
-            demoYears.push(y)
-        }
-        setYears(demoYears)
-    }
-    const findYear = (memberData, demoYears) => {
-        if (of === 'savings' && memberData.savingDetails.length !== 0) {
-            const startYear = Number(memberData.savingDetails[0].year);
-            const endYear = Number(memberData.savingDetails[memberData.savingDetails.length-1].year);
-            yearCal (demoYears, startYear, endYear)
-        } else if (of === 'loan' && memberData.loanDetails.length !== 0) {
-            const startYear = Number(memberData.loanDetails[0].year);
-            const endYear = Number(memberData.loanDetails[memberData.loanDetails.length-1].year);
-            yearCal (demoYears, startYear, endYear)
+    const commanYears = (data) => {
+        let yearArr = []
+        if (of === "savings") {
+            data?.savingDetails?.map((savingDetail) => {
+                yearArr = [...yearArr, Number(savingDetail.year)]
+            })
+            setYears([...new Set(yearArr)]);
         } else {
-            setYears([]);
+            data?.loanDetails?.map((loanDetail) => {
+                yearArr = [...yearArr, Number(loanDetail.year)]
+            })
+            setYears([...new Set(yearArr)]);
+        }
+    }
+
+    const getYear = () => {
+        if (id) {
+            const currentMember = allMembers.find((member) => member._id === id).data;
+            setSavingDetails(currentMember.savingDetails);
+            setLoanDetails(currentMember.loanDetails);
+            commanYears(currentMember);
+            if (of === 'savings') {
+                return currentMember.savingDetails;
+            } else {
+                return currentMember.loanDetails;
+            }
+        } else {
+            setSavingDetails(data.savingDetails);
+            setLoanDetails(data.loanDetails);
+            commanYears(data);
+            if (of === 'savings') {
+                return data.savingDetails;
+            } else {
+                return data.loanDetails;
+            }
         }
     }
 
     useEffect(() => {
+        setYear(0)
+        getYear();
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
         }, 100)
-        setYears([])
-        setYear(0);
-        let demoYears = []
-        if (id) {
-            const currentMember = allMembers.find((member) => member._id === id).data;
-            setCurrentMemberData(currentMember);
-            findYear(currentMember, demoYears);
-        } else {
-            setCurrentMemberData(data)
-            findYear(data, demoYears);
-        }
-    }, [of, id, data])
+    }, [of, id, data, allMembers])
 
     return (
     <>
@@ -101,7 +123,7 @@ export default function Details() {
                                 ))}
                             </Select>
                         </FormControl>
-                </Box>
+                    </Box>
                     <Sheet sx={{ height: '67vh', overflow: 'auto'}}>
                         <Table
                             aria-label="table with sticky header"
@@ -117,7 +139,7 @@ export default function Details() {
                             </thead>
                             <tbody>
                                 {of === "savings" ?
-                                    currentMemberData?.savingDetails?.map((savingDetail) => (
+                                    savingDetails?.map((savingDetail) => (
                                         <tr key={savingDetail._id}>
                                             <td className='text-center'>{savingDetail.year}</td>
                                             <td className='text-center'>{Months[savingDetail.month]}</td>
@@ -125,7 +147,7 @@ export default function Details() {
                                         </tr>
                                     ))
                                 :
-                                    currentMemberData?.loanDetails.map((loanDetail) => (
+                                    loanDetails.map((loanDetail) => (
                                         <tr key={loanDetail._id}>
                                             <td className='text-center'>{loanDetail.year}</td>
                                             <td className='text-center'>{Months[loanDetail.month]}</td>
