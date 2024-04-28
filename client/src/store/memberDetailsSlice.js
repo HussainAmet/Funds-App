@@ -23,7 +23,7 @@ const postSlice = createSlice ({
             state.allMembersDetails.push(action.payload.newMember)
         },
         delMember: (state, action) => {
-            state.allMembersDetails = state.allMembersDetails.filter((member) => member.data.auth.data.phone !== action.payload.phone)
+            state.allMembersDetails = state.allMembersDetails.filter((member) => member.data.auth._id !== action.payload.phone)
             state.memberDetails.totalSavings.totalSavings = state.memberDetails.totalSavings.totalSavings - action.payload.saving
         },
         logout: (state, action) => {

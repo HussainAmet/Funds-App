@@ -234,7 +234,7 @@ app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) 
           }
         }
       )
-      const authResponse = await userModel.deleteOne({'data.phone': phone})
+      const authResponse = await userModel.deleteOne({_id: phone})
       const memberResponse = await memberDetailsModel.deleteOne({_id: id})
       res.status(200).send({authResponse, memberResponse, saving: member.data.saving});
     }
