@@ -105,7 +105,7 @@ export default function Members() {
       <div>
         {error && <span className='fw-semibold text-white mt-2 mb-2 p-2 d-block text-center bg-danger'>{error}</span>}
         {success && <span className='fw-semibold text-bg-success mt-2 mb-2 p-2 d-block text-center'>{success}</span>}
-        <Sheet sx={{ minHeight: '61vh', overflow: 'auto'}}>
+        <Sheet sx={{ minHeight: '64vh', overflow: 'auto'}}>
           <Table
             aria-label="table with sticky header"
             stickyHeader
