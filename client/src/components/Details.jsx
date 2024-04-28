@@ -124,7 +124,7 @@ export default function Details() {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Sheet sx={{ height: '62vh', overflow: 'auto'}}>
+                    <Sheet sx={{ height: '60vh', overflow: 'auto'}}>
                         <Table
                             aria-label="table with sticky header"
                             stickyHeader
