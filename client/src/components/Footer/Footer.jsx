@@ -6,7 +6,7 @@ import AppBar from '@mui/material/AppBar';
 function Footer() {
   return (
     <Box >
-        <AppBar position="static" sx={{ display: 'flex', flexDirection: 'row', gap: 5, justifyContent: 'center', background: '#999', boxShadow: 'none' }}>
+        <AppBar position="static" sx={{ display: 'flex', flexDirection: 'row', gap: 3, justifyContent: 'center', background: '#999', boxShadow: 'none' }}>
             <Typography variant="h6" component="div" >Developed by: Hussain Amet</Typography>
             <Typography variant="h6" component="div" >Phone no.: 8739975253</Typography>
         </AppBar>
