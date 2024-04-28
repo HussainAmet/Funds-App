@@ -15,23 +15,23 @@ import axios from 'axios';
 import config from '../config/config';
 import { getMemberDetails, getAllMembersDetails, logout } from '../store/memberDetailsSlice';
 
-const Months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-];
+const Months = {
+    "January": 1,
+    "February": 2,
+    "March": 3,
+    "April": 4,
+    "May": 5,
+    "June" : 6,
+    "July" : 7,
+    "August" : 8,
+    "September" : 9,
+    "October" : 10,
+    "November" : 11,
+    "December" : 12,
+};
 
 function UpdateDetails() {
-    const [memberName, setMemberName] = useState('');
+    const [memberId, setMemberId] = useState('');
     const [memberData, setMemberData] = useState([]);
     const [date, setDate] = useState()
     const [year, setYear] = useState('')
@@ -51,36 +51,58 @@ function UpdateDetails() {
 
     const updateDetails = async (data) => {
         setError('')
-        const selectedMember = memberData.find((member) => member.data.auth.data.name === data.member )
+        const selectedMember = memberData.find((member) => member._id === data.member).data
         try {
+            if (what === 'add-savings') {
+                let savings = selectedMember.savingDetails.filter((saving) => saving.year == year)
+                if (savings.find((saving) => saving.month === Months[month])) {
+                    let error = {response: {data: "Savings already added for this month"}}
+                    throw error;
+                }
+            } else if (what === 'add-loan-installment') {
+                if (selectedMember.loanRemaining === 0) {
+                    let error = {response: {data: "Member has no loan pending"}}
+                    throw error;
+                }
+                let loans = selectedMember.loanDetails.filter((loan) => loan.year == year)
+                if (loans.find((loan) => loan.month === Months[month])) {
+                    let error = {response: {data: "Loan installment already added for this month"}}
+                    throw error;
+                }
+            } else if (what === 'give-loan') {
+                if ( selectedMember.loanRemaining !== 0 || selectedMember.loanDate) {
+                    let error = {response: {data: `Loan is already given to ${selectedMember.auth.data.name}`}}
+                    throw error;
+                }
+            }
             if (what === 'add-savings' || what === 'add-loan-installment') {
-                const response = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}${what === 'add-savings'?'add-savings' : 'add-loan-installment'}`, {id: selectedMember._id, amount: data.amount, year, month, date })
+                const response = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}${what === 'add-savings'?'add-savings' : 'add-loan-installment'}`, {id: data.member, amount: data.amount, year, month, date })
                 if (response.data === "ok" && response.status === 200) {
                     if (what === 'add-savings') {
                         setSuccess("Savings Added")
                         setTimeout(() => {
                             setSuccess('');
                         }, 5000);
-                        setMemberName('')
+                        setMemberId('')
                         setAmount('')
                     } else {
                         setSuccess("Loan Installment Added")
                         setTimeout(() => {
                             setSuccess('');
                         }, 5000);
-                        setMemberName('')
+                        setMemberId('')
                         setAmount('')
                     }
                 }
             } else if (what === 'give-loan') {
                 const loanDate = month + ' ' + year
-                const response = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}give-loan`, {id: selectedMember._id, amount: data.amount, loanDate, date })
+                const response = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}give-loan`, {id: data.member, amount: data.amount, loanDate, date })
                 if (response.data === "ok" && response.status === 200) {
-                    setSuccess(`Loan given to ${data.member}`)
+                    setSuccess(`Loan given to ${selectedMember.auth.data.name}`)
                     setTimeout(() => {
                         setSuccess('');
                     }, 5000);
-                    setMemberName('')
+                    setMemberId('')
                     setAmount('')
                 }
             }
@@ -93,7 +115,8 @@ function UpdateDetails() {
                 navigate('/login')
             }
         } catch (error) {
-            setError(error.response.data || "Something went wrong");
+            console.log(error);
+            setError(error?.response?.data || "Something went wrong");
             setTimeout(() => {
                 setError('');
             }, 5000);
@@ -101,8 +124,9 @@ function UpdateDetails() {
     }
 
     useEffect(() => {
+        setError('')
         setAmount('')
-        setMemberName('')
+        setMemberId('')
         if (what === "add-savings") {
             setPage("Add Savings")
         } else if (what === "give-loan") {
@@ -130,12 +154,13 @@ function UpdateDetails() {
                         })}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={memberName}
+                        value={memberId}
                         label="Select Member"
-                        onChange={(event) => setMemberName(event.target.value)}
+                        onChange={(event) => setMemberId(event.target.value)}
+                        required
                     >
                         {memberData.map((member) => (
-                            <MenuItem key={member._id} value={member.data.auth.data.name}>{member.data.auth.data.name}</MenuItem>
+                            <MenuItem key={member._id} value={member._id}>{member.data.auth.data.name}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>
@@ -159,8 +184,9 @@ function UpdateDetails() {
                                 value={month}
                                 onChange={(event) => setMonth(event.target.value)}
                                 sx={{width: '150px', height: "36px" }}
+                                required
                             >
-                                {Months.map((month) => (
+                                {Object.keys(Months).map((month) => (
                                     <MenuItem key={month} value={month}>{month}</MenuItem>
                                 ))}
                             </Select>
@@ -176,6 +202,7 @@ function UpdateDetails() {
                             value={amount}
                             placeholder='0'
                             onChange={(e) => {setAmount(e.target.value)}}
+                            required
                         />
                     </div>
                 </FormControl>
