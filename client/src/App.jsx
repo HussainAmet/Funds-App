@@ -1,16 +1,23 @@
 import React from 'react'
-import { Header } from './components'
+import { Footer, Header } from './components'
 import { Outlet } from 'react-router-dom'
 
 function App() {
 
   return (
-    <>
-      <Header />
+    <div>
+      <div>
+        <header>
+          <Header />
+        </header>
         <main>
           <Outlet />
         </main>
-    </>
+        <footer>
+          <Footer />
+        </footer>
+      </div>
+    </div>
   )
 }
 

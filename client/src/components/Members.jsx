@@ -18,6 +18,8 @@ import axios from 'axios';
 import config from '../config/config';
 
 export default function Members() {
+  const [input, setInput] = useState('')
+  const [selectedMember, setSelectedMember] = useState([])
   const [memberData, setMemberData] = useState([]);
   const [memberDetails, setMemberDetails] = useState();
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
@@ -34,6 +36,15 @@ export default function Members() {
 
   const members = useSelector((state) => state.member.allMembersDetails)
   const currentMember = useSelector((state) => state.member.memberDetails)
+
+  const handleChange = (e) => {
+    const { value } = e.target
+    setInput(value);
+    const filteredMembers = memberData.filter(member =>
+      member.data.auth.data.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setSelectedMember(filteredMembers);
+  }
 
   const deleteMember = async (phone, id) => {
     try {
@@ -74,6 +85,8 @@ export default function Members() {
   };
 
   useEffect(() => {
+    setSelectedMember([]);
+    setInput('')
     setMemberData(members);
     setMemberDetails(currentMember)
   }, [members, currentMember])
@@ -85,14 +98,14 @@ export default function Members() {
         <p className='fs-2 text-center'>Total Balance: {memberDetails?.totalSavings?.totalSavings}</p>
       </div>
       <div className='d-flex w-100 mb-3 d-flex justify-content-around '>
-        <input type="text" placeholder='Search Member' className='ms-3 w-50  border-top-0 border-end-0 border-start-0 border-primary' maxLength={50}/>
+        <input type="text" placeholder='Search Member' className='ms-3 w-50  border-top-0 border-end-0 border-start-0 border-primary' maxLength={50} value={input} onChange={handleChange} />
         <Link to="/host/members/add-member"><Button variant="solid" onClick={handleAddMemberClick}>Add Member</Button></Link>
       </div>
       <Outlet/>
       <div>
         {error && <span className='fw-semibold text-white mt-2 mb-2 p-2 d-block text-center bg-danger'>{error}</span>}
         {success && <span className='fw-semibold text-bg-success mt-2 mb-2 p-2 d-block text-center'>{success}</span>}
-        <Sheet sx={{ height: '67vh', overflow: 'auto'}}>
+        <Sheet sx={{ minHeight: '61vh', overflow: 'auto'}}>
           <Table
             aria-label="table with sticky header"
             stickyHeader
@@ -107,22 +120,37 @@ export default function Members() {
               </tr>
             </thead>
             <tbody>
-              {memberData?.map((member) => (
-                <tr key={member._id}>
-                  <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
-                  <td className='text-center'>{member.data.saving}</td>
-                  {!member.data.auth.data.role.includes('host')?
-                    (member.data.auth.data.phone !== '1234512345'?
-                    <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
-                      setDelId(member._id);
-                      setDelName(member.data.auth.data.name);
-                      setDelPhone(member.data.auth._id);
-                      setOpen(true);
-                    }} width="25" height="25" fill="currentColor" className="bi bi-person-dash cursor-pointer" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/><path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/></svg></td>
-                    : <td className='text-center'>Not allowed</td>)
-                  : <td className='text-center'>Host</td>}
-                </tr>
-              ))}
+              {selectedMember.length !== 0?
+                selectedMember.map((member) => (
+                  <tr key={member._id}>
+                    <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
+                    <td className='text-center'>{member.data.saving}</td>
+                    {!member.data.auth.data.role.includes('host')?
+                      <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
+                        setDelId(member._id);
+                        setDelName(member.data.auth.data.name);
+                        setDelPhone(member.data.auth._id);
+                        setOpen(true);
+                      }} width="25" height="25" fill="currentColor" className="bi bi-person-dash cursor-pointer" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/><path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/></svg></td>
+                    : <td className='text-center'>Host</td>}
+                  </tr>
+                ))
+              :
+                memberData.map((member) => (
+                  <tr key={member._id}>
+                    <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
+                    <td className='text-center'>{member.data.saving}</td>
+                    {!member.data.auth.data.role.includes('host')?
+                      <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
+                        setDelId(member._id);
+                        setDelName(member.data.auth.data.name);
+                        setDelPhone(member.data.auth._id);
+                        setOpen(true);
+                      }} width="25" height="25" fill="currentColor" className="bi bi-person-dash cursor-pointer" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/><path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/></svg></td>
+                    : <td className='text-center'>Host</td>}
+                  </tr>
+                ))
+              }
             </tbody>
             <tfoot>
               <tr>

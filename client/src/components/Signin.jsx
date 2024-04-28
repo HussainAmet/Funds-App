@@ -20,6 +20,8 @@ export default function Signin() {
   const [loading, setLoading] = useState(false)
 
   const logIn = async (data) => {
+    setLoading(true)
+    setError('');
     try {
       const userData = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, {phone: data.number})
       if (userData.data) {
@@ -28,10 +30,10 @@ export default function Signin() {
         const role = userData.data.member.data.auth.data.role;
         if (role.includes('host')) {
           dispatch(getAllMembersDetails({allMembers: userData.data.members}));
-          localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
+          localStorage.setItem('phone', ((userData.data.member.data.auth.data.phone * 2) + 18))
           navigate("/host/dashboard/profile");
         } else if (role.includes('member')) {
-          localStorage.setItem('phone', userData.data.member.data.auth.data.phone)
+          localStorage.setItem('phone', ((userData.data.member.data.auth.data.phone * 2) + 18))
           navigate("/member/dashboard/profile");
         } else {
           setLoading(false)
@@ -52,16 +54,10 @@ export default function Signin() {
     }, 3000)
   }
 
-  const log = async (data) => {
-    setLoading(true)
-    setError('');
-    logIn(data);
-  }
-
   useEffect(() => {
-    const data = {number: localStorage.phone};
+    const data = {number: ((localStorage.phone - 18) / 2)};
     if (data.number) {
-      log(data)
+      logIn(data)
     }
   }, [])
 
@@ -71,13 +67,12 @@ export default function Signin() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: '100px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Box component="form" onSubmit={handleSubmit(log)} sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1 }}>
           <TextField
             type='number'
             onInput={(e) => {e.target.value = e.target.value.replace(/[^0-9]/g, '');}}

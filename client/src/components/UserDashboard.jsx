@@ -18,7 +18,7 @@ export default function UserDashboard() {
   return (
     <>
       <div className='me-2 ms-2'>
-        <div className='mb-4 d-flex justify-content-around'>
+        <div className='mb-2 d-flex justify-content-around'>
           <NavLink className={({isActive}) => `text-decoration-none tab ${isActive && 'tabFocus'}`} to={id? `/member-profile${`/${id}`}/dashboard/profile` : `/${role}/dashboard/profile`}>Profile</NavLink>
           <NavLink className={({isActive}) => `text-decoration-none tab ${isActive && 'tabFocus'}`} to={id? `/member-profile${`/${id}`}/dashboard/details/savings` : `/${role}/dashboard/details/savings`}>Savings</NavLink>
           <NavLink className={({isActive}) => `text-decoration-none tab ${isActive && 'tabFocus'}`} to={id? `/member-profile${`/${id}`}/dashboard/details/loan` : `/${role}/dashboard/details/loan`}>Loan</NavLink>
