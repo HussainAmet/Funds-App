@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/memberDetailsSlice';
+import Footer from '../Footer/Footer'
 
 export default function Header() {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ export default function Header() {
 
   return (
     <>
+      <Footer />
       <Box sx={{ flexGrow: 1 }} className="mb-4" >
         <AppBar position="static">
           <Toolbar>
