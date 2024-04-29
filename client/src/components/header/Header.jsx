@@ -18,7 +18,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import Zoom from '@mui/material/Zoom';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import './header.css'
-// import Footer from '../Footer/Footer'
 
 export default function Header() {
   const navigate = useNavigate();
@@ -98,7 +97,7 @@ export default function Header() {
           </ListItem>
         </Link>
         <ListItem className='text-decoration-none position-absolute info'>
-            <ListItemText>Developed by: Hussain Amet (8739975253)</ListItemText>
+            <ListItemText>Developer: Hussain Amet (8739975253)</ListItemText>
         </ListItem>
       </List>
     </Box>
