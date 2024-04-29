@@ -107,7 +107,7 @@ export default function Details() {
             <>
             {years.length !== 0 ?
                 <div>
-                    <Box sx={{ minWidth: 130 }}>
+                    <Box>
                         <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">Select Year</InputLabel>
                             <Select
@@ -124,7 +124,7 @@ export default function Details() {
                             </Select>
                         </FormControl>
                     </Box>
-                    <Sheet sx={{ height: '60vh', overflow: 'auto'}}>
+                    <Sheet sx={{ height: '70vh', overflow: 'auto'}}>
                         <Table
                             aria-label="table with sticky header"
                             stickyHeader

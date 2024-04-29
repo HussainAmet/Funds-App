@@ -13,7 +13,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/memberDetailsSlice';
-import Footer from '../Footer/Footer'
+import './header.css'
+// import Footer from '../Footer/Footer'
 
 export default function Header() {
   const navigate = useNavigate();
@@ -82,13 +83,16 @@ export default function Header() {
             </ListItemButton>
           </ListItem>
         </Link>
+        <ListItem className='text-decoration-none position-absolute info'>
+            <ListItemText>Developed by: Hussain Amet (8739975253)</ListItemText>
+        </ListItem>
       </List>
     </Box>
   );
 
   return (
     <>
-      <Footer />
+      {/* <Footer /> */}
       <Box sx={{ flexGrow: 1 }} className="mb-4" >
         <AppBar position="static">
           <Toolbar>
