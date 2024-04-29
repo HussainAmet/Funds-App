@@ -105,7 +105,6 @@ export default function Header() {
 
   return (
     <>
-      {/* <Footer /> */}
       <Box sx={{ flexGrow: 1 }} className="mb-4" >
         <AppBar position="static">
           <Toolbar>
