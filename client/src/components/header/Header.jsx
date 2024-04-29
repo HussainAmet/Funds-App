@@ -125,7 +125,7 @@ export default function Header() {
                 Association Funds
               </Typography>
               <div className='d-flex'>
-                {!memberData?.auth?.data?.role.includes('host') ?
+                {memberData?.auth?.data?.role.includes('host') ?
                   <ClickAwayListener onClickAway={handleTooltipClose}>
                       <Tooltip
                         PopperProps={{
