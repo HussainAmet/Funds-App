@@ -18,6 +18,7 @@ const postSlice = createSlice ({
         },
         getAllMembersDetails: (state, action) => {
             state.allMembersDetails = action.payload.allMembers
+            state.allMembersDetails.pop(state.allMembersDetails.data.auth.data.role.includes('admin'))
         },
         addMember: (state, action) => {
             state.allMembersDetails.push(action.payload.newMember)
