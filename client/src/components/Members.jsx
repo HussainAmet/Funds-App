@@ -156,9 +156,15 @@ export default function Members() {
             </tbody>
             <tfoot>
               <tr>
+                {memberDetails?.auth?.data?.role?.includes('admin')?
                 <td colSpan={3} align='center'>
                 Total Members :- {memberData?.length}
                 </td>
+                :
+                <td colSpan={2} align='center'>
+                Total Members :- {memberData?.length}
+                </td>
+                }
               </tr>
             </tfoot>
           </Table>
