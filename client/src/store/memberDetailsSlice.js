@@ -17,7 +17,7 @@ const postSlice = createSlice ({
             state.memberDetails = action.payload.member;
         },
         getAllMembersDetails: (state, action) => {
-            state.allMembersDetails = action.payload.allMembers.filter((member) => {!member?.auth?.data?.role?.includes('admin')})
+            state.allMembersDetails = action.payload.allMembers
         },
         addMember: (state, action) => {
             state.allMembersDetails.push(action.payload.newMember)
