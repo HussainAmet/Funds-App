@@ -116,7 +116,7 @@ export default function Members() {
               <tr>
                 <th className='text-center w-50'>Name</th>
                 <th className='text-center'>Saving</th>
-                {memberDetails.data.auth.data.role.includes('admin')?
+                {memberDetails?.auth?.data?.role?.includes('admin')?
                 <th className='text-center'>Action</th>
                 : ''}
               </tr>
@@ -127,7 +127,7 @@ export default function Members() {
                   <tr key={member._id}>
                     <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
                     <td className='text-center'>{member.data.saving}</td>
-                    {memberDetails.data.auth.data.role.includes('admin')?
+                    {memberDetails?.auth?.data?.role?.includes('admin')?
                       <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
                         setDelId(member._id);
                         setDelName(member.data.auth.data.name);
@@ -142,7 +142,7 @@ export default function Members() {
                   <tr key={member._id}>
                     <td onClick={() => {navigate(`/member-profile/${member._id}/dashboard/profile`)}} className='ps-4 text-left cursor-pointer'>{member.data.auth.data.name}</td>
                     <td className='text-center'>{member.data.saving}</td>
-                    {memberDetails.data.auth.data.role.includes('admin')?
+                    {memberDetails?.auth?.data?.role?.includes('admin')?
                       <td className='text-center'><svg xmlns="http://www.w3.org/2000/svg" onClick={() => {
                         setDelId(member._id);
                         setDelName(member.data.auth.data.name);
