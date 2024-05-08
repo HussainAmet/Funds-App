@@ -31,14 +31,16 @@ export default function Profile() {
           <p className='m-0 fs-6 text-secondary'>Phone</p>
           <p className='fs-3'>{currentMemberData?.auth?.data?.phone}</p>
         </div>
-        <div>
+        {!currentMemberData?.auth?.data?.role?.includes('admin')?
+        <><div>
           <p className='m-0 fs-6 text-secondary'>Savings</p>
           <p className='fs-3'>{currentMemberData?.saving}</p>
         </div>
         <div>
           <p className='m-0 fs-6 text-secondary'>Loan Remaining</p>
           <p className='fs-3'>{currentMemberData?.loanRemaining}</p>
-        </div> 
+        </div></>
+        : '' }
         {currentMemberData.loanDate ?
           <div>
             <p className='m-0 fs-6 text-secondary'>Loan Date</p>

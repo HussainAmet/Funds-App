@@ -117,7 +117,7 @@ export default function Members() {
                 <th className='text-center w-50'>Name</th>
                 <th className='text-center'>Saving</th>
                 {memberDetails?.auth?.data?.role?.includes('admin')?
-                <th className='text-center'>Action</th>
+                  <th className='text-center'>Action</th>
                 : ''}
               </tr>
             </thead>

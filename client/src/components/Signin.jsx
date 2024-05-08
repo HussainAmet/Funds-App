@@ -29,7 +29,7 @@ export default function Signin() {
         dispatch(getMemberDetails({member: userData.data.member.data}));
         const role = userData.data.member.data.auth.data.role;
         if (role.includes('host')) {
-          dispatch(getAllMembersDetails({allMembers: userData.data.members}));
+          dispatch(getAllMembersDetails({allMembers: userData.data.members.filter((member) => member.data.auth.data.role.includes('member'))}));
           localStorage.setItem('phone', ((userData.data.member.data.auth.data.phone * 2) + 18))
           navigate("/host/dashboard/profile");
         } else if (role.includes('member')) {
