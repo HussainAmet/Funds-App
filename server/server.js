@@ -226,6 +226,11 @@ app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) 
     if (member.data.loanRemaining > 0) {
       res.status(400).send("Member has loan pending")
     } else {
+      const delDate = new Date()
+      //const authResponse = await userModel.deleteOne({_id: phone})
+      await userModel.findOneAndUpdate({_id: phone}, {"data.deletedOn": delDate})
+      //const memberResponse = await memberDetailsModel.deleteOne({_id: id})
+      await memberDetailsModel.findOneAndUpdate({_id: id}, {"data.deletedOn": delDate})
       await totalSavingsModel.findOneAndUpdate(
         {},
         {
@@ -234,9 +239,7 @@ app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) 
           }
         }
       )
-      const authResponse = await userModel.deleteOne({_id: phone})
-      const memberResponse = await memberDetailsModel.deleteOne({_id: id})
-      res.status(200).send({authResponse, memberResponse, saving: member.data.saving});
+      res.status(200).send({message: "ok", saving: member.data.saving});
     }
   } catch (error) {
     res.status(400).send(error);
