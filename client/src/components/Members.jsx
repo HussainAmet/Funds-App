@@ -49,8 +49,9 @@ export default function Members() {
   const deleteMember = async (phone, id) => {
     try {
       const response = await axios.delete(`${config.poductionUrl}${config.requestBaseUrl}delete-member/${id}/${phone}`);
-      if (response.data.authResponse.acknowledged === true && response.data.memberResponse.acknowledged === true) {
-        if (response.data.authResponse.deletedCount === 1 && response.data.memberResponse.deletedCount === 1) {
+      //if (response.data.authResponse.acknowledged === true && response.data.memberResponse.acknowledged === true) {
+        //if (response.data.authResponse.deletedCount === 1 && response.data.memberResponse.deletedCount === 1) {
+        if (response.data.message === "ok") {
           dispatch(delMember({phone: phone, saving: response.data.saving}));
           setSuccess("Member Deleted");
           setTimeout(() => {
@@ -59,9 +60,9 @@ export default function Members() {
         } else {
           setError("Something went wrong")
         }
-      } else {
-        setError("Something went wrong")
-      }
+      //} else {
+        //setError("Something went wrong")
+      //}
     } catch (error) {
       console.log(error);
       setError(error.response.data || "Something went wrong")
