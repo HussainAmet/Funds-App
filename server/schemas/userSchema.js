@@ -9,6 +9,7 @@ const userSchema = new Schema({
         phone: { type: String, required: true, unique: true },
         name: { type: String, required: true },
         role: [{ type: String, enum: ['host', 'member'], required: true }],
+        deletedOn: Date,
     }
 });
 
