@@ -19,6 +19,7 @@ const memberSchema = new Schema({
         loanDate: String,
         savingDetails: [DetailsSchema],
         loanDetails: [DetailsSchema],
+        deletedOn: Date,
     },
 });
 
