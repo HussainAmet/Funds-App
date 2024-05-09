@@ -10,6 +10,7 @@ const userSchema = new Schema({
         name: { type: String, required: true },
         role: [{ type: String, enum: ['host', 'member'], required: true }],
         deletedOn: Date,
+        active: { type: Boolean, required: true },
     }
 });
 

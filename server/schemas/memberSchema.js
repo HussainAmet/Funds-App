@@ -20,6 +20,7 @@ const memberSchema = new Schema({
         savingDetails: [DetailsSchema],
         loanDetails: [DetailsSchema],
         deletedOn: Date,
+        active: { type: Boolean, required: true },
     },
 });
 

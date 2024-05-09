@@ -31,19 +31,23 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   try {
     const userData = await userModel.findOne({"data.phone": number});
     if (userData) {
-      if (userData.data.role.includes("host")){
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
-          {path: "data.totalSavings"},
-          {path: "data.auth", select: "data"},
-        ]);
-        const members = await memberDetailsModel.find({}, "data").populate("data.auth", "data");
-        res.status(200).send({member, members});
-      } else if (userData.data.role.includes("member")) {
-        const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
-          {path: "data.totalSavings"},
-          {path: "data.auth", select: "data"},
-        ]);
-        res.status(200).send({member});
+      if (userData.data.active === true) {
+        if (userData.data.role.includes("host")){
+          const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
+            {path: "data.totalSavings"},
+            {path: "data.auth", select: "data"},
+          ]);
+          const members = await memberDetailsModel.find({ "data.active": true }, "data").populate("data.auth", "data");
+          res.status(200).send({member, members});
+        } else if (userData.data.role.includes("member")) {
+          const member = await memberDetailsModel.findOne({ "data.auth": userData._id }, "data").populate([
+            {path: "data.totalSavings"},
+            {path: "data.auth", select: "data"},
+          ]);
+          res.status(200).send({member});
+        } else {
+          res.status(404).send('');
+        }
       } else {
         res.status(404).send('');
       }
@@ -65,6 +69,7 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
         name: name,
         phone: phone,
         role: ["member"],
+        active: true,
       }
     })
     const newMember = await memberDetailsModel.create({
@@ -73,6 +78,7 @@ app.post(`${config.requestBaseUrl}add-member`, async (req, res) => {
         totalSavings: totalSavingsId._id,
         saving: 0,
         loanRemaining: 0,
+        active: true,
       },
     })
     const member = await memberDetailsModel.findOne({ _id: newMember._id }, "data").populate([
@@ -228,9 +234,9 @@ app.delete(`${config.requestBaseUrl}delete-member/:id/:phone`, async (req, res) 
     } else {
       const delDate = new Date()
       //const authResponse = await userModel.deleteOne({_id: phone})
-      await userModel.findOneAndUpdate({_id: phone}, {"data.deletedOn": delDate})
+      await userModel.findOneAndUpdate({ _id: phone }, { "data.deletedOn": delDate, "data.active": false })
       //const memberResponse = await memberDetailsModel.deleteOne({_id: id})
-      await memberDetailsModel.findOneAndUpdate({_id: id}, {"data.deletedOn": delDate})
+      await memberDetailsModel.findOneAndUpdate({ _id: id }, { "data.deletedOn": delDate, "data.active": false })
       await totalSavingsModel.findOneAndUpdate(
         {},
         {
