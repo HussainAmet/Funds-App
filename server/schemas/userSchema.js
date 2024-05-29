@@ -8,7 +8,7 @@ const userSchema = new Schema({
     data: {
         phone: { type: String, required: true, unique: true },
         name: { type: String, required: true },
-        role: [{ type: String, enum: ['host', 'member'], required: true }],
+        role: [{ type: String, enum: ['host', 'member', 'admin'], required: true }],
         deletedOn: Date,
         active: { type: Boolean, required: true },
     }

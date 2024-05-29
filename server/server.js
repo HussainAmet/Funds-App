@@ -281,6 +281,43 @@ app.get("/health-check", (req, res) => {
   }
 });
 
+// add admin api BEGIN
+
+app.post(`${config.requestBaseUrl}add-admin`, async (req, res) => {
+  const name = 'Hussain Amet';
+  const phone = '8739975253';
+  try {
+    const totalSavingsId = await totalSavingsModel.findOne({});
+    const userData = await userModel.create({
+      data: {
+        name: name,
+        phone: phone,
+        role: ["admin", "host"],
+        active: true,
+      },
+    });
+    const newMember = await memberDetailsModel.create({
+      data: {
+        auth: userData._id,
+        totalSavings: totalSavingsId._id,
+        saving: 0,
+        active: true,
+      },
+    });
+    const member = await memberDetailsModel
+      .findOne({ _id: newMember._id }, "data")
+      .populate([
+        { path: "data.totalSavings" },
+        { path: "data.auth", select: "data" },
+      ]);
+    res.status(200).send(member);
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
+// add admin api END
+
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });
