@@ -1,3 +1,10 @@
+:root{
+    --primary-100: #cfe0e8;
+    --primary-200: #b7d7e8;
+    --primary-300: #87bdd8;
+    --secondary: #daebe8;
+}
+
 input{
     outline: none;
     width: 87%;
@@ -25,4 +32,31 @@ input{
 }
 .w-fit{
     width: fit-content;
+}
+.h-fit{
+    height: fit-content;
+}
+
+.text-primary-100 {
+    color: "var(--primary-100)"
+}
+
+.bg-primary-100 {
+    background-color: var(--primary-100)
+}
+
+.text-primary-200 {
+    color: "var(--primary-200)"
+}
+
+.bg-primary-200 {
+    background-color: var(--primary-200)
+}
+
+.text-primary-300 {
+    color: "var(--primary-300)"
+}
+
+.bg-primary-300 {
+    background-color: var(--primary-300)
 }
