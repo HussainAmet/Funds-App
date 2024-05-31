@@ -23,6 +23,7 @@ const Months = {
   10: "October",
   11: "November",
   12: "December",
+  13: "January - August"
 };
 
 export default function Details() {
@@ -146,7 +147,7 @@ export default function Details() {
                       ? savingDetails?.map((savingDetail) => (
                           <tr key={savingDetail._id}>
                             <td className="text-center">{savingDetail.year}</td>
-                            <td className="text-center">
+                            <td className="">
                               {Months[savingDetail.month]}
                             </td>
                             <td className="text-center">
@@ -157,7 +158,7 @@ export default function Details() {
                       : loanDetails.map((loanDetail) => (
                           <tr key={loanDetail._id}>
                             <td className="text-center">{loanDetail.year}</td>
-                            <td className="text-center">
+                            <td className="">
                               {Months[loanDetail.month]}
                             </td>
                             <td className="text-center">{loanDetail.amount}</td>
