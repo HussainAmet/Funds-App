@@ -7,8 +7,8 @@ import config from "./config/config";
 function App() {
   useEffect(() => {
     const manifestDetails = {
-      short_name: config.groupName,
-      name: config.groupName,
+      short_name: 'AF Demo',
+      name: 'AF Demo',
       icons: [
         {
           src: "favicon.ico",
