@@ -283,71 +283,71 @@ app.get("/health-check", (req, res) => {
 
 // add admin api BEGIN
 
-app.post(`${config.requestBaseUrl}add-admin`, async (req, res) => {
-  const name = 'Hussain Amet';
-  const phone = '8739975253';
-  try {
-    const totalSavingsId = await totalSavingsModel.findOne({});
-    const userData = await userModel.create({
-      data: {
-        name: name,
-        phone: phone,
-        role: ["admin", "host"],
-        active: true,
-      },
-    });
-    const newMember = await memberDetailsModel.create({
-      data: {
-        auth: userData._id,
-        totalSavings: totalSavingsId._id,
-        saving: 0,
-        active: true,
-      },
-    });
-    const member = await memberDetailsModel
-      .findOne({ _id: newMember._id }, "data")
-      .populate([
-        { path: "data.totalSavings" },
-        { path: "data.auth", select: "data" },
-      ]);
-    res.status(200).send(member);
-  } catch (error) {
-    res.status(409).send(error);
-  }
-});
+// app.post(`${config.requestBaseUrl}add-admin`, async (req, res) => {
+//   const name = 'Hussain Amet';
+//   const phone = '8739975253';
+//   try {
+//     const totalSavingsId = await totalSavingsModel.findOne({});
+//     const userData = await userModel.create({
+//       data: {
+//         name: name,
+//         phone: phone,
+//         role: ["admin", "host"],
+//         active: true,
+//       },
+//     });
+//     const newMember = await memberDetailsModel.create({
+//       data: {
+//         auth: userData._id,
+//         totalSavings: totalSavingsId._id,
+//         saving: 0,
+//         active: true,
+//       },
+//     });
+//     const member = await memberDetailsModel
+//       .findOne({ _id: newMember._id }, "data")
+//       .populate([
+//         { path: "data.totalSavings" },
+//         { path: "data.auth", select: "data" },
+//       ]);
+//     res.status(200).send(member);
+//   } catch (error) {
+//     res.status(409).send(error);
+//   }
+// });
 
 // add admin api END
 
 // add manual data BEGIN
 
-import authDetailsData from '../Association_Funds_New_Data/associationFunds-authDetails.json' assert { type: 'json' }
-import membersData from '../Association_Funds_New_Data/associationFunds-members.json' assert { type: 'json' }
+// import authDetailsData from '../Association_Funds_New_Data/associationFunds-authDetails.json' assert { type: 'json' }
+// import membersData from '../Association_Funds_New_Data/associationFunds-members.json' assert { type: 'json' }
 
-app.post(`${config.requestBaseUrl}add-manual-data`, async (req, res) => {
-  try {
-    const totalSavingsId = await totalSavingsModel.findOne({});
-    authDetailsData.map(async(authDetailData, index) => {
-      const userData = await userModel.create({
-        data: authDetailData.data
-      });
-      await memberDetailsModel.create({
-        data: {
-          auth: userData._id,
-          totalSavings: totalSavingsId._id,
-          saving: Number(membersData[index].data.saving),
-          active: true,
-          savingDetails: membersData[index].data.savingDetails,
-          loanDetails: membersData[index].data.loanDetails,
-          loanDate: String(membersData[index].data.loanDate),
-          loanRemaining: Number(membersData[index].data.loanRemaining),
-        },
-      })
-    })
-    res.status(200).send('ok');
-  } catch (error) {
-    res.status(409).send(error);
-  }
-});
+// app.post(`${config.requestBaseUrl}add-manual-data`, async (req, res) => {
+//   try {
+//     const totalSavingsId = await totalSavingsModel.findOne({});
+//     authDetailsData.map(async(authDetailData, index) => {
+//       const userData = await userModel.create({
+//         data: authDetailData.data
+//       });
+//       await memberDetailsModel.create({
+//         data: {
+//           auth: userData._id,
+//           totalSavings: totalSavingsId._id,
+//           saving: Number(membersData[index].data.saving),
+//           active: true,
+//           savingDetails: membersData[index].data.savingDetails,
+//           loanDetails: membersData[index].data.loanDetails,
+//           loanDate: String(membersData[index].data.loanDate),
+//           loanRemaining: Number(membersData[index].data.loanRemaining),
+//         },
+//       })
+//     })
+//     res.status(200).send('ok');
+//   } catch (error) {
+//     res.status(409).send(error);
+//   }
+// });
 
 // add manual data END
 
