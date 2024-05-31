@@ -147,7 +147,7 @@ export default function Details() {
                       ? savingDetails?.map((savingDetail) => (
                           <tr key={savingDetail._id}>
                             <td className="text-center">{savingDetail.year}</td>
-                            <td className="">
+                            <td className="text-center">
                               {Months[savingDetail.month]}
                             </td>
                             <td className="text-center">
@@ -158,7 +158,7 @@ export default function Details() {
                       : loanDetails.map((loanDetail) => (
                           <tr key={loanDetail._id}>
                             <td className="text-center">{loanDetail.year}</td>
-                            <td className="">
+                            <td className="text-center">
                               {Months[loanDetail.month]}
                             </td>
                             <td className="text-center">{loanDetail.amount}</td>
