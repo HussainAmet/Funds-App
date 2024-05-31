@@ -7,6 +7,8 @@ import {
   totalSavingsModel,
 } from "./schemas/index.js";
 import cors from "cors";
+import authDetailsData from '../Association_Funds_New_Data/associationFunds-authDetails.json' assert { type: 'json' }
+import membersData from '../Association_Funds_New_Data/associationFunds-members.json' assert { type: 'json' }
 
 const app = express();
 const port = config.port || 3001;
@@ -317,6 +319,50 @@ app.post(`${config.requestBaseUrl}add-admin`, async (req, res) => {
 });
 
 // add admin api END
+
+// add manual data BEGIN
+
+app.post(`${config.requestBaseUrl}add-manual-data`, async (req, res) => {
+  // const name = req.body.name;
+  // const phone = String(req.body.phone);
+  try {
+    const totalSavingsId = await totalSavingsModel.findOne({});
+    authDetailsData.map(async(authDetailData, index) => {
+      const userData = await userModel.create({
+        // data: {
+        //   name: name,
+        //   phone: phone,
+        //   role: ["member"],
+        //   active: true,
+        // },
+        data: authDetailData.data
+      });
+      await memberDetailsModel.create({
+        data: {
+          auth: userData._id,
+          totalSavings: totalSavingsId._id,
+          saving: Number(membersData[index].data.saving),
+          active: true,
+          savingDetails: membersData[index].data.savingDetails,
+          loanDetails: membersData[index].data.loanDetails,
+          loanDate: membersData[index].data.loanDate,
+          loanRemaining: Number(membersData[index].data.loanRemaining),
+        },
+      })
+    })
+    // const member = await memberDetailsModel
+    //   .findOne({ _id: newMember._id }, "data")
+    //   .populate([
+    //     { path: "data.totalSavings" },
+    //     { path: "data.auth", select: "data" },
+    //   ]);
+    res.status(200).send('ok');
+  } catch (error) {
+    res.status(409).send(error);
+  }
+});
+
+// add manual data END
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
