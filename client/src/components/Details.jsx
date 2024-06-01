@@ -9,8 +9,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
+import Months from './months.json'
 
-const Months = {
+{/*const Months = {
   1: "January",
   2: "February",
   3: "March",
@@ -24,7 +25,7 @@ const Months = {
   11: "November",
   12: "December",
   13: "January - August"
-};
+};*/}
 
 export default function Details() {
   const [year, setYear] = useState(0);
@@ -148,7 +149,7 @@ export default function Details() {
                           <tr key={savingDetail._id}>
                             <td className="text-center">{savingDetail.year}</td>
                             <td className="text-center">
-                              {Months[savingDetail.month]}
+                              {Months[(savingDetail.month) - 1]}
                             </td>
                             <td className="text-center">
                               {savingDetail.amount}
@@ -159,7 +160,7 @@ export default function Details() {
                           <tr key={loanDetail._id}>
                             <td className="text-center">{loanDetail.year}</td>
                             <td className="text-center">
-                              {Months[loanDetail.month]}
+                              {Months[(loanDetail.month) - 1]}
                             </td>
                             <td className="text-center">{loanDetail.amount}</td>
                           </tr>
