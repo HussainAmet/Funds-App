@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
-//import Months from './months.js'
 
 const Months = {
   1: "January",
@@ -24,7 +23,8 @@ const Months = {
   10: "October",
   11: "November",
   12: "December",
-  13: "January - August"
+  13: "January - August",
+  14: "January - May",
 };
 
 export default function Details() {
@@ -64,14 +64,16 @@ export default function Details() {
     let yearArr = [];
     if (of === "savings") {
       data?.savingDetails?.map((savingDetail) => {
-        yearArr = [...yearArr, Number(savingDetail.year)];
+        yearArr = [...yearArr, Number(savingDetail.year.split(" ", 1))];
       });
-      setYears([...new Set(yearArr)]);
+      yearArr = [...new Set(yearArr)]
+      setYears(yearArr);
     } else {
       data?.loanDetails?.map((loanDetail) => {
-        yearArr = [...yearArr, Number(loanDetail.year)];
+        yearArr = [...yearArr, Number(loanDetail.year.split(" ", 1))];
       });
-      setYears([...new Set(yearArr)]);
+      yearArr = [...new Set(yearArr)]
+      setYears(yearArr);
     }
   };
 
@@ -99,7 +101,28 @@ export default function Details() {
   };
 
   useEffect(() => {
-    setYear(0);
+    {/*const detailsData = getYear()
+    const currentYear = new Date().getFullYear()
+    setYear(years[years.length-1])
+    let details = [];
+    detailsData?.map((detail) => {
+      if (Number(detail.year === String(years[years.length-1]))) {
+        details.push(detail);
+      }
+    });
+    if (of === "savings") {
+      if (details !== []) {
+        setSavingDetails(details);
+      } else {
+        getYear()
+      }
+    } else {
+      if (details !== []) {
+        setLoanDetails(details);
+      } else {
+        getYear()
+      }
+    }*/}
     getYear();
     setLoading(true);
     setTimeout(() => {
