@@ -46,7 +46,7 @@ export default function Details() {
       const detailsData = getYear();
       let details = [];
       detailsData?.map((detail) => {
-        if (Number(String(detail.year.split(" ", 1))) === event.target.value) {
+        if (Number(detail.year.split(" ", 1)) === event.target.value) {
           details.push(detail);
         }
       });
