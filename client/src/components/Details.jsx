@@ -9,9 +9,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
-import Months from './months.js'
+//import Months from './months.js'
 
-{/*const Months = {
+const Months = {
   1: "January",
   2: "February",
   3: "March",
@@ -25,7 +25,7 @@ import Months from './months.js'
   11: "November",
   12: "December",
   13: "January - August"
-};*/}
+};
 
 export default function Details() {
   const [year, setYear] = useState(0);
@@ -50,7 +50,11 @@ export default function Details() {
           details.push(detail);
         }
       });
-      setSavingDetails(details);
+      if (of === "savings") {
+        setSavingDetails(details);
+      } else {
+        setLoanDetails(details);
+      }
     }
   };
 
@@ -149,7 +153,7 @@ export default function Details() {
                           <tr key={savingDetail._id}>
                             <td className="text-center">{savingDetail.year}</td>
                             <td className="text-center">
-                              {Months[(savingDetail.month) - 1]}
+                              {Months[savingDetail.month]}
                             </td>
                             <td className="text-center">
                               {savingDetail.amount}
@@ -160,7 +164,7 @@ export default function Details() {
                           <tr key={loanDetail._id}>
                             <td className="text-center">{loanDetail.year}</td>
                             <td className="text-center">
-                              {Months[(loanDetail.month) - 1]}
+                              {Months[loanDetail.month]}
                             </td>
                             <td className="text-center">{loanDetail.amount}</td>
                           </tr>
