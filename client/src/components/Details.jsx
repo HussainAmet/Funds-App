@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
-import Months from './months.json'
+import Months from './months.js'
 
 {/*const Months = {
   1: "January",
