@@ -10,22 +10,22 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
 
-const Months = {
-  1: "January",
-  2: "February",
-  3: "March",
-  4: "April",
-  5: "May",
-  6: "June",
-  7: "July",
-  8: "August",
-  9: "September",
-  10: "October",
-  11: "November",
-  12: "December",
-  13: "January - August",
-  14: "January - May",
-};
+const Months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+  "January - August",
+  "January - May"
+]
 
 export default function Details() {
   const [year, setYear] = useState(0);
@@ -176,7 +176,7 @@ export default function Details() {
                           <tr key={savingDetail._id}>
                             <td className="text-center">{savingDetail.year}</td>
                             <td className="text-center">
-                              {Months[savingDetail.month]}
+                              {Months[savingDetail.month - 1]}
                             </td>
                             <td className="text-center">
                               {savingDetail.amount}
@@ -187,7 +187,7 @@ export default function Details() {
                           <tr key={loanDetail._id}>
                             <td className="text-center">{loanDetail.year}</td>
                             <td className="text-center">
-                              {Months[loanDetail.month]}
+                              {Months[loanDetail.month - 1]}
                             </td>
                             <td className="text-center">{loanDetail.amount}</td>
                           </tr>

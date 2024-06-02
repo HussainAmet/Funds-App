@@ -15,20 +15,20 @@ app.use(cors());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-const Months = {
-  January: 1,
-  February: 2,
-  March: 3,
-  April: 4,
-  May: 5,
-  June: 6,
-  July: 7,
-  August: 8,
-  September: 9,
-  October: 10,
-  November: 11,
-  December: 12,
-};
+// const Months = {
+//   January: 1,
+//   February: 2,
+//   March: 3,
+//   April: 4,
+//   May: 5,
+//   June: 6,
+//   July: 7,
+//   August: 8,
+//   September: 9,
+//   October: 10,
+//   November: 11,
+//   December: 12,
+// };
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = String(req.body.phone);
@@ -121,7 +121,7 @@ app.post(`${config.requestBaseUrl}add-savings`, async (req, res) => {
         $push: {
           "data.savingDetails": {
             amount: amount,
-            month: Months[month],
+            month: month,
             year: year,
           },
         },

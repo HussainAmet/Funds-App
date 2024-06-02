@@ -20,20 +20,20 @@ import {
 } from "../store/memberDetailsSlice";
 import { TextField } from "@mui/material";
 
-const Months = {
-  January: 1,
-  February: 2,
-  March: 3,
-  April: 4,
-  May: 5,
-  June: 6,
-  July: 7,
-  August: 8,
-  September: 9,
-  October: 10,
-  November: 11,
-  December: 12,
-};
+const Months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
 
 function UpdateDetails() {
   const [memberId, setMemberId] = useState("");
@@ -64,7 +64,7 @@ function UpdateDetails() {
         let savings = selectedMember.savingDetails.filter(
           (saving) => saving.year == year
         );
-        if (savings.find((saving) => saving.month === Months[month])) {
+        if (savings.find((saving) => saving.month === (Months.indexOf(month) + 1))) {
           let error = {
             response: { data: "Savings already added for this month" },
           };
@@ -78,7 +78,7 @@ function UpdateDetails() {
         let loans = selectedMember.loanDetails.filter(
           (loan) => loan.year == year
         );
-        if (loans.find((loan) => loan.month === Months[month])) {
+        if (loans.find((loan) => loan.month === (Months.indexOf(month) + 1))) {
           let error = {
             response: { data: "Loan installment already added for this month" },
           };
@@ -99,7 +99,7 @@ function UpdateDetails() {
           `${config.poductionUrl}${config.requestBaseUrl}${
             what === "add-savings" ? "add-savings" : "add-loan-installment"
           }`,
-          { id: data.member, amount: data.amount, year, month, date }
+          { id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1), date }
         );
         if (response.data === "ok" && response.status === 200) {
           if (what === "add-savings") {
@@ -234,7 +234,7 @@ function UpdateDetails() {
                 sx={{ width: "150px", height: "36px" }}
                 required
               >
-                {Object.keys(Months).map((month) => (
+                {Months.map((month) => (
                   <MenuItem key={month} value={month}>
                     {month}
                   </MenuItem>
