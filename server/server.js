@@ -244,6 +244,7 @@ app.delete(
     const phone = String(req.params.phone);
     const id = req.params.id;
     try {
+      const auth = await userModel.findOne({ _id: phone });
       const member = await memberDetailsModel.findOne({ _id: id });
       if (member.data.loanRemaining > 0) {
         res.status(400).send("Member has loan pending");
@@ -251,7 +252,7 @@ app.delete(
         const delDate = new Date();
         await userModel.findOneAndUpdate(
           { _id: phone },
-          { "data.deletedOn": delDate, "data.active": false }
+          { "data.deletedOn": delDate, "data.active": false, "data.phone": `${auth.data.phone} del` }
         );
         await memberDetailsModel.findOneAndUpdate(
           { _id: id },
