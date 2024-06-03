@@ -166,7 +166,7 @@ app.post(`${config.requestBaseUrl}add-loan-installment`, async (req, res) => {
           $push: {
             "data.loanDetails": {
               amount: amount,
-              month: Months[month],
+              month: month,
               year: year,
             },
           },
