@@ -123,6 +123,7 @@ export default function Details() {
         getYear()
       }
     }*/}
+    setYear(0);
     getYear();
     setLoading(true);
     setTimeout(() => {
