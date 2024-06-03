@@ -252,7 +252,7 @@ app.delete(
         const delDate = new Date();
         await userModel.findOneAndUpdate(
           { _id: phone },
-          { "data.deletedOn": delDate, "data.active": false, "data.phone": `${auth.data.phone} del` }
+          { "data.deletedOn": delDate, "data.active": false, "data.phone": `${auth.data.phone} del ${delDate}` }
         );
         await memberDetailsModel.findOneAndUpdate(
           { _id: id },
