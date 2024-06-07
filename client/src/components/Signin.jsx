@@ -16,6 +16,7 @@ import {
 import config from "../config/config";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
+import { resetTimer } from "../hooks/reloadTimout";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -71,12 +72,14 @@ export default function Signin() {
             "phone",
             userData.data.member.data.auth.data.phone * 2 + 18
           );
+          resetTimer();
           navigate("/host/dashboard/profile");
         } else if (role.includes("member")) {
           localStorage.setItem(
             "phone",
             userData.data.member.data.auth.data.phone * 2 + 18
           );
+          resetTimer();
           navigate("/member/dashboard/profile");
         } else {
           setLoading(false);

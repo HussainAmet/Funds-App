@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { delMember } from "../store/memberDetailsSlice";
 import axios from "axios";
 import config from "../config/config";
+import { resetTimer } from "../hooks/reloadTimout";
 
 export default function Members() {
   const [input, setInput] = useState("");
@@ -44,6 +45,7 @@ export default function Members() {
       member.data.auth.data.name.toLowerCase().includes(value.toLowerCase())
     );
     setSelectedMember(filteredMembers);
+    resetTimer();
   };
 
   const deleteMember = async (phone, id) => {
@@ -69,6 +71,7 @@ export default function Members() {
       console.log(error);
       setError(error.response.data || "Something went wrong");
     }
+    resetTimer();
   };
 
   const handleAddMemberClick = () => {

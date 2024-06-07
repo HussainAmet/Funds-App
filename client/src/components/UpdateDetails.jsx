@@ -19,6 +19,7 @@ import {
   logout,
 } from "../store/memberDetailsSlice";
 import { TextField } from "@mui/material";
+import { resetTimer } from "../hooks/reloadTimout";
 
 const Months = [
   "January",
@@ -151,6 +152,7 @@ function UpdateDetails() {
         setError("");
       }, 5000);
     }
+    resetTimer();
   };
 
   useEffect(() => {

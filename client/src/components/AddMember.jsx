@@ -8,6 +8,7 @@ import axios from "axios";
 import config from "../config/config";
 import { useDispatch } from "react-redux";
 import { addMember } from "../store/memberDetailsSlice";
+import { resetTimer } from "../hooks/reloadTimout";
 
 const style = {
   position: "absolute",
@@ -61,6 +62,7 @@ function AddMember(props) {
         setError("Member with this number already exist!");
       else setError("An error occurred.");
     }
+    resetTimer();
   };
 
   return (
