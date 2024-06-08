@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { resetTimer } from "../hooks/reloadTimout"
+//import { resetTimer } from "../hooks/reloadTimout"
 
 const Months = [
   "January",
@@ -57,7 +57,7 @@ export default function Details() {
         setLoanDetails(details);
       }
     }
-    resetTimer();
+    //resetTimer();
   };
 
   const data = useSelector((state) => state.member.memberDetails);
@@ -77,7 +77,7 @@ export default function Details() {
       yearArr = [...new Set(yearArr)]
       setYears(yearArr);
     }
-    resetTimer();
+    //resetTimer();
   };
 
   const getYear = () => {
@@ -86,7 +86,7 @@ export default function Details() {
       setSavingDetails(currentMember.savingDetails);
       setLoanDetails(currentMember.loanDetails);
       commanYears(currentMember);
-      resetTimer();
+      //resetTimer();
       if (of === "savings") {
         return currentMember.savingDetails;
       } else {
@@ -96,7 +96,7 @@ export default function Details() {
       setSavingDetails(data.savingDetails);
       setLoanDetails(data.loanDetails);
       commanYears(data);
-      resetTimer();
+      //resetTimer();
       if (of === "savings") {
         return data.savingDetails;
       } else {
