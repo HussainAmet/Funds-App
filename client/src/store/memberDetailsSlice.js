@@ -21,7 +21,16 @@ const postSlice = createSlice ({
             state.allMembersDetails = action.payload.allMembers.filter((member) => member.data.auth.data.role.includes("member"))
         },
         addMember: (state, action) => {
-            state.allMembersDetails.push(action.payload.newMember)
+            state.allMembersDetails.push(action.payload.newMember);
+            state.allMembersDetails = state.allMembersDetails.sort((name1, name2) => {
+                if (name1.data.auth.data.name.toLowerCase() < name2.data.auth.data.name.toLowerCase()) {
+                    return -1;
+                }
+                if (name1.data.auth.data.name.toLowerCase() > name2.data.auth.data.name.toLowerCase()) {
+                    return 1;
+                }
+                return 0;
+            })
         },
         delMember: (state, action) => {
             state.allMembersDetails = state.allMembersDetails.filter((member) => member.data.auth._id !== action.payload.phone)

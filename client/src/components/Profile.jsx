@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { resetTimer } from "../hooks/reloadTimout"
+// import { resetTimer } from "../hooks/reloadTimout"
 
 export default function Profile() {
   const [currentMemberData, setCurrentMemberData] = useState([]);
@@ -12,7 +12,7 @@ export default function Profile() {
   const { id } = useParams();
 
   useEffect(() => {
-    resetTimer();
+    // resetTimer();
     if (id) {
       setCurrentMemberData(allMembers.find((member) => member._id === id).data);
     } else setCurrentMemberData(currentMember);

@@ -39,20 +39,20 @@ export default function Details() {
 
   const { id, of } = useParams();
 
-  const handleChange = (event) => {
-    setYear(event.target.value);
-    if (event.target.value === 0) {
+  const handleChange = (boxYear) => {
+    setYear(boxYear);
+    if (boxYear === 0) {
       getYear();
     } else {
       const detailsData = getYear();
       let details = [];
       detailsData?.map((detail) => {
-        if (Number(detail.year.split(" ", 1)) === event.target.value) {
+        if (Number(detail.year.split(" ", 1)) === boxYear) {
           details.push(detail);
         }
       });
       if (of === "savings") {
-        setSavingDetails(details);
+        setSavingDetails(details);  
       } else {
         setLoanDetails(details);
       }
@@ -106,30 +106,9 @@ export default function Details() {
   };
 
   useEffect(() => {
-    {/*const detailsData = getYear()
-    const currentYear = new Date().getFullYear()
-    setYear(years[years.length-1])
-    let details = [];
-    detailsData?.map((detail) => {
-      if (Number(detail.year === String(years[years.length-1]))) {
-        details.push(detail);
-      }
-    });
-    if (of === "savings") {
-      if (details !== []) {
-        setSavingDetails(details);
-      } else {
-        getYear()
-      }
-    } else {
-      if (details !== []) {
-        setLoanDetails(details);
-      } else {
-        getYear()
-      }
-    }*/}
-    setYear(0);
-    getYear();
+    const currentYear = new Date().getFullYear();
+    // getYear();
+    handleChange(currentYear);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -152,7 +131,7 @@ export default function Details() {
                     id="demo-simple-select"
                     value={year}
                     label="Select Year"
-                    onChange={handleChange}
+                    onChange={(event) => handleChange(event.target.value)}
                   >
                     <MenuItem value={0}>All</MenuItem>
                     {years?.map((year) => (

@@ -46,7 +46,18 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
           const members = await memberDetailsModel
             .find({ "data.active": true }, "data")
             .populate("data.auth", "data");
-          res.status(200).send({ member, members });
+          res.status(200).send({
+            member,
+            members: members.sort((name1, name2) => {
+              if (name1.data.auth.data.name < name2.data.auth.data.name) {
+                  return -1;
+              }
+              if (name1.data.auth.data.name > name2.data.auth.data.name) {
+                  return 1;
+              }
+              return 0;
+            })
+          });
         } else if (userData.data.role.includes("member")) {
           const member = await memberDetailsModel
             .findOne({ "data.auth": userData._id }, "data")

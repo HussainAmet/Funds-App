@@ -72,14 +72,12 @@ export default function Signin() {
             "phone",
             userData.data.member.data.auth.data.phone * 2 + 18
           );
-          resetTimer();
           navigate("/host/dashboard/profile");
         } else if (role.includes("member")) {
           localStorage.setItem(
             "phone",
             userData.data.member.data.auth.data.phone * 2 + 18
           );
-          resetTimer();
           navigate("/member/dashboard/profile");
         } else {
           setLoading(false);
@@ -97,6 +95,7 @@ export default function Signin() {
     setTimeout(() => {
       setError("");
     }, 3000);
+    resetTimer();
   };
 
   useEffect(() => {
