@@ -129,6 +129,18 @@ export default function Signin() {
             alignItems: "center",
           }}
         >
+          <Box sx={{
+            backgroundColor: 'lightGreen',
+            fontSize: 14,
+            borderRadius: 2,
+            padding: 1,
+            color: 'green',
+            fontFamily: "monospace",
+          }}>
+            <p style={{margin: 1}}>Use These Sample Phone Numbers for Signin</p>
+            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Admin</span> : 1234567890, <span style={{fontWeight: 600,}}>Host</span> : 1234512345,</p>
+            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 6789067890</p>
+          </Box>
           <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1 }}>
             <TextField
               type="number"

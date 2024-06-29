@@ -13,10 +13,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/memberDetailsSlice";
-import Tooltip from "@mui/material/Tooltip";
-import InfoIcon from "@mui/icons-material/Info";
-import Zoom from "@mui/material/Zoom";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import "./header.css";
 import config from "../../config/config";
 // import AppShortcutTwoToneIcon from "@mui/icons-material/AppShortcutTwoTone";
@@ -59,16 +55,6 @@ export default function Header() {
 
   const data = useSelector((state) => state.member.memberDetails);
   const dispatch = useDispatch();
-
-  const [open, setOpen] = useState(false);
-
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
-
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -147,9 +133,6 @@ export default function Header() {
             </ListItemButton>
           </ListItem>
         </Link>
-        <ListItem className="text-decoration-none position-absolute info">
-          <ListItemText>Developer: Hussain Amet (8739975253)</ListItemText>
-        </ListItem>
       </List>
     </Box>
   );
@@ -192,31 +175,6 @@ export default function Header() {
               </div> */}
             </Typography>
             <div className="d-flex">
-              {!memberData?.auth?.data?.role.includes("host") ? (
-                <ClickAwayListener onClickAway={handleTooltipClose}>
-                  <Tooltip
-                    PopperProps={{
-                      disablePortal: true,
-                    }}
-                    onClose={handleTooltipClose}
-                    TransitionComponent={Zoom}
-                    open={open}
-                    disableFocusListener
-                    disableHoverListener
-                    disableTouchListener
-                    title="Developer: Hussain Amet (8739975253)"
-                  >
-                    <button
-                      onClick={handleTooltipOpen}
-                      className="border-0 bg-transparent me-3"
-                    >
-                      <InfoIcon className="text-white" />
-                    </button>
-                  </Tooltip>
-                </ClickAwayListener>
-              ) : (
-                ""
-              )}
               {memberData?.auth?.data?.role ? (
                 <Button color="inherit" onClick={logo}>
                   Logout
