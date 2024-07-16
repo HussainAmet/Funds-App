@@ -53,6 +53,7 @@ export default function Signin() {
   } = useForm();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState();
 
   const logIn = async (data) => {
     setLoading(true);
@@ -102,6 +103,7 @@ export default function Signin() {
     const data = { number: (localStorage.phone - 18) / 2 };
     if (data.number) {
       logIn(data);
+      setPhoneNumber(data.number)
     }
   }, [localStorage]);
 
@@ -149,6 +151,8 @@ export default function Signin() {
                 e.target.value = e.target.value.replace(/[^0-9]/g, "");
               }}
               margin="normal"
+              value={phoneNumber}
+              autoFocus={true}
               required
               fullWidth
               id="phone"
