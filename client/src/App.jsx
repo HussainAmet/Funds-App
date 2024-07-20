@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react'
 import { Header } from './components'
 import { Outlet } from 'react-router-dom'
+import { getMembers } from './firebase/auth'
 // import reactManifest from "react-manifest";
 // import config from "./config/config";
 
 function App() {
+
+  useEffect(() => {
+    getMembers();
+  })
   // useEffect(() => {
   //   const manifestDetails = {
   //     short_name: config.groupName,
