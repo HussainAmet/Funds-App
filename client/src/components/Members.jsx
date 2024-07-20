@@ -189,7 +189,6 @@ export default function Members() {
                             setDelId(member._id);
                             setDelName(member.data.auth.data.name);
                             setDelPhone(member.data.auth.data.phone);
-                            setDelSaving(member.data.saving);
                             setOpen(true);
                           }}
                           width="25"
