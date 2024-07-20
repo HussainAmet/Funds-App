@@ -68,12 +68,12 @@ export default function Members() {
       } else {
         setError("Something went wrong");
       }
-      //} else {
-      //setError("Something went wrong")
-      //}
     } catch (error) {
       console.log(error);
-      setError(error.response.data || "Something went wrong");
+      setError(error.message || "Something went wrong");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     }
     resetTimer();
   };
@@ -188,7 +188,7 @@ export default function Members() {
                           onClick={() => {
                             setDelId(member._id);
                             setDelName(member.data.auth.data.name);
-                            setDelPhone(member.data.auth.data.phone);
+                            setDelPhone(member.data.auth._id);
                             setOpen(true);
                           }}
                           width="25"
