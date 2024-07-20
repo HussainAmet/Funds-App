@@ -181,14 +181,15 @@ export default function Members() {
                   <td className="text-center">{member.data.saving}</td>
                   {memberDetails?.auth?.data?.role?.includes("admin") ? (
                     <td className="text-center">
-                      {memberDetails?.auth?.data?.phone === '1234512345'
-                      || memberDetails?.auth?.data?.phone === '6789067890' ?
-                        <svg
+                      {member?.data?.auth?.data?.phone === "1234512345" || member?.data?.auth?.data?.phone === "6789067890" ?
+                        "Not Allowed" 
+                      : <svg
                           xmlns="http://www.w3.org/2000/svg"
                           onClick={() => {
                             setDelId(member._id);
                             setDelName(member.data.auth.data.name);
-                            setDelPhone(member.data.auth._id);
+                            setDelPhone(member.data.auth.data.phone);
+                            setDelSaving(member.data.saving);
                             setOpen(true);
                           }}
                           width="25"
@@ -199,8 +200,7 @@ export default function Members() {
                         >
                           <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
                           <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
-                        </svg>
-                      : "Not Allowed"}
+                        </svg>}
                     </td>
                   ) : (
                     ""
