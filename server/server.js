@@ -258,7 +258,7 @@ app.delete(
       const auth = await userModel.findOne({ _id: phone });
       const member = await memberDetailsModel.findOne({ _id: id });
       if (member.data.loanRemaining > 0) {
-        res.status(400).send("Member has loan pending");
+        res.status(400).send({ message: "Member has loan pending" });
       } else {
         const delDate = new Date();
         await userModel.findOneAndUpdate(
