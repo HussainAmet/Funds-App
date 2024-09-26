@@ -54,6 +54,7 @@ export default function Signin() {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState();
+  const [password, setPassword] = useState();
 
   const logIn = async (data) => {
     setLoading(true);
@@ -90,8 +91,8 @@ export default function Signin() {
       }
     } catch (error) {
       setLoading(false);
-      if (error.response.status === 404) setError("Member Not Found");
-      else setError("An error occurred.");
+      if (error?.response?.status === 404) setError("Member Not Found");
+      else setError("An error occurred");
     }
     setTimeout(() => {
       setError("");
@@ -131,7 +132,7 @@ export default function Signin() {
             alignItems: "center",
           }}
         >
-          <Box sx={{
+          {/* <Box sx={{
             backgroundColor: 'lightGreen',
             fontSize: 14,
             borderRadius: 2,
@@ -143,7 +144,8 @@ export default function Signin() {
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Admin</span> : 1234567890</p>
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Host</span> : 1234512345,</p>
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 6789067890</p>
-          </Box>
+          </Box> */}
+          {error && <span className="text-danger mt-1 ">{error}</span>}
           <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1 }}>
             <TextField
               type="number"
@@ -166,14 +168,24 @@ export default function Signin() {
                 minLength: { value: 10, message: "min" },
               })}
             />
-            <div className="d-flex flex-column " style={{ width: "309.92px" }}>
-              {error && <span className="text-danger mt-1 ">{error}</span>}
-              {errors.number &&
-                (errors.number.type === "minLength" ||
-                  errors.number.type === "maxLength") && (
-                  <span className="text-danger mt-1">Invalid Number</span>
-                )}
-            </div>
+            {errors.number &&
+              (errors.number.type === "minLength" ||
+                errors.number.type === "maxLength") && (
+                <span className="text-danger mt-1">Invalid Number</span>
+              )}
+            <TextField
+              type="password"
+              margin="normal"
+              value={password}
+              // required
+              fullWidth
+              id="password"
+              label="Password"
+              name="password"
+              // {...register("password", {
+              //   required: true,
+              // })}
+            />
             <Button
               type="submit"
               fullWidth
@@ -195,6 +207,29 @@ export default function Signin() {
                 />
               ) : (
                 "Sign In"
+              )}
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{
+                mb: 2,
+                color: "var(--primary-300)",
+                borderColor: "var(--primary-300)",
+                "&:hover": { backgroundColor: "var(--primary-200)", color: "white", borderColor: "white" },
+                "&:disabled": { backgroundColor: "var(--secondary)" },
+              }}
+              disabled={loading}
+              className="py-3"
+              onClick={() => {logIn({number: 1234567890})}}
+            >
+              {loading ? (
+                <CircularProgressWithLabel
+                  value={progress}
+                  style={{ color: "var(--primary-300)" }}
+                />
+              ) : (
+                "Sign In as a Guest"
               )}
             </Button>
           </Box>

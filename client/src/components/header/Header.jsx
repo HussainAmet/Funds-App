@@ -15,40 +15,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/memberDetailsSlice";
 import "./header.css";
 import config from "../../config/config";
-// import AppShortcutTwoToneIcon from "@mui/icons-material/AppShortcutTwoTone";
 
 export default function Header() {
-  // const supportsA2HS = () => {
-  //   return 'getInstalledRelatedApps' in window.navigator;
-  // };
-  // const handleA2HSClick = () => {
-  //   if (supportsA2HS()) {
-  //     // Display A2HS prompt
-  //     window.navigator.getInstalledRelatedApps().then((apps) => {
-  //       if (apps.length === 0) {
-  //         // A2HS prompt not triggered yet
-  //         window.addEventListener('beforeinstallprompt', (e) => {
-  //           // Prevent Chrome 67 and earlier from automatically showing the prompt
-  //           e.preventDefault();
-  //           // Stash the event so it can be triggered later
-  //           const deferredPrompt = e;
-  //           // Show the prompt
-  //           deferredPrompt.prompt();
-  //           // Wait for the user to respond to the prompt
-  //           deferredPrompt.userChoice.then((choiceResult) => {
-  //             if (choiceResult.outcome === 'accepted') {
-  //               console.log('User accepted the A2HS prompt');
-  //             } else {
-  //               console.log('User dismissed the A2HS prompt');
-  //             }
-  //             // Clear the deferredPrompt variable
-  //             deferredPrompt = null;
-  //           });
-  //         });
-  //       }
-  //     });
-  //   }
-  // };
   const navigate = useNavigate();
   const [state, setState] = useState(false);
   const [memberData, setMemberData] = useState();
@@ -168,11 +136,6 @@ export default function Header() {
               }}
             >
               {config.groupName}
-              {/* <div className="cursor-pointer" onClick={handleA2HSClick} >
-                <AppShortcutTwoToneIcon
-                  sx={{ "&:hover": { color: "var(--secondary)" } }}
-                />
-              </div> */}
             </Typography>
             <div className="d-flex">
               {memberData?.auth?.data?.role ? (

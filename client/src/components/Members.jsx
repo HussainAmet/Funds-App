@@ -120,7 +120,7 @@ export default function Members() {
         <input
           type="text"
           placeholder="Search Member"
-          className="ms-3 w-50  border-top-0 border-end-0 border-start-0"
+          className="ms-3 w-50 border-top-0 border-end-0 border-start-0"
           style={{borderColor: 'var(--primary-300)'}}
           maxLength={50}
           value={input}
@@ -152,7 +152,7 @@ export default function Members() {
             {success}
           </span>
         )}
-        <Sheet sx={{ height: "72vh", overflow: "auto" }}>
+        <Sheet sx={{ height: "49vh" ,overflow: "auto" }}>
           <Table
             aria-label="table with sticky header"
             stickyHeader
