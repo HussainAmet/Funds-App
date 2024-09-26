@@ -37,6 +37,7 @@ export default function Members() {
 
   const members = useSelector((state) => state.member.allMembersDetails);
   const currentMember = useSelector((state) => state.member.memberDetails);
+  const totalLoanRemaining = useSelector((state) => state.member.totalLoanRemaining);
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -70,7 +71,8 @@ export default function Members() {
       }
     } catch (error) {
       console.log(error);
-      setError(error.message || "Something went wrong");
+      if (error?.response?.data?.message) setError(error?.response?.data?.message);
+      else setError("Something went wrong");
       setTimeout(() => {
         setError("");
       }, 5000);
@@ -107,8 +109,11 @@ export default function Members() {
         <div className="position-fixed top-0 start-0 w-100 h-100 z-1"></div>
       )}
       <div className="profile-info">
-        <p className="fs-2 text-center">
+        <p className="fs-2 text-center m-0">
           Total Balance: {memberDetails?.totalSavings?.totalSavings}
+        </p>
+        <p className="fs-2 text-center">
+          Total Loan Remaining: {totalLoanRemaining}
         </p>
       </div>
       <div className="d-flex w-100 mb-3 d-flex justify-content-around ">

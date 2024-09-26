@@ -4,6 +4,7 @@ const initialState = {
     status: false,
     memberDetails: {},
     allMembersDetails: [],
+    totalLoanRemaining: 0,
 }
 
 const postSlice = createSlice ({
@@ -28,6 +29,13 @@ const postSlice = createSlice ({
                 }
                 return 0;
             });
+            state.totalLoanRemaining = state.allMembersDetails.reduce((total, member) => {
+                if (member.data.loanRemaining) {
+                    return total + member.data.loanRemaining;
+                }
+                return total;
+            }, 0);
+            
         },
         addMember: (state, action) => {
             state.allMembersDetails.push(action.payload.newMember);
