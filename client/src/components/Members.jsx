@@ -152,7 +152,7 @@ export default function Members() {
             {success}
           </span>
         )}
-        <Sheet sx={{ height: "auto" ,overflow: "auto" }}>
+        <Sheet sx={{ height: "100vw" ,overflow: "auto" }}>
           <Table
             aria-label="table with sticky header"
             stickyHeader
