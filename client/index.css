@@ -64,9 +64,3 @@ input{
 .bg-primary-300 {
     background-color: var(--primary-300)
 }
-
-@media (max-width: 768px) {
-    #root {
-      min-height: 92vh;
-    }
-}
