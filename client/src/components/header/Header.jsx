@@ -13,7 +13,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/memberDetailsSlice";
-import "./header.css";
+import Tooltip from "@mui/material/Tooltip";
+import InfoIcon from "@mui/icons-material/Info";
+import Zoom from "@mui/material/Zoom";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import config from "../../config/config";
 
 export default function Header() {
@@ -23,6 +26,16 @@ export default function Header() {
 
   const data = useSelector((state) => state.member.memberDetails);
   const dispatch = useDispatch();
+
+  const [open, setOpen] = useState(false);
+
+  const handleTooltipClose = () => {
+    setOpen(false);
+  };
+
+  const handleTooltipOpen = () => {
+    setOpen(true);
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -107,7 +120,7 @@ export default function Header() {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }} className="mb-4">
+      <Box className="mb-4 sticky-top">
         <AppBar position="static">
           <Toolbar style={{ backgroundColor: "var(--primary-300)" }}>
             {memberData?.auth?.data?.role.includes("host") ? (
@@ -138,6 +151,31 @@ export default function Header() {
               {config.groupName}
             </Typography>
             <div className="d-flex">
+              {/* {!memberData?.auth?.data?.role.includes("host") ? (
+                <ClickAwayListener onClickAway={handleTooltipClose}>
+                  <Tooltip
+                    PopperProps={{
+                      disablePortal: true,
+                    }}
+                    onClose={handleTooltipClose}
+                    TransitionComponent={Zoom}
+                    open={open}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                    title="Developer: Hussain Amet (8739975253)"
+                  >
+                    <button
+                      onClick={handleTooltipOpen}
+                      className="border-0 bg-transparent me-3"
+                    >
+                      <InfoIcon className="text-white" />
+                    </button>
+                  </Tooltip>
+                </ClickAwayListener>
+              ) : (
+                ""
+              )} */}
               {memberData?.auth?.data?.role ? (
                 <Button color="inherit" onClick={logo}>
                   Logout

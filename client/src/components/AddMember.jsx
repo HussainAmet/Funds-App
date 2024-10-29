@@ -4,11 +4,9 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import config from "../config/config";
 import { useDispatch } from "react-redux";
 import { addMember } from "../store/memberDetailsSlice";
-import { resetTimer } from "../hooks/reloadTimout";
+import { fireAddMember } from "../firebase/auth";
 
 const style = {
   position: "absolute",
@@ -47,22 +45,23 @@ function AddMember(props) {
   const addMemberDetails = async (data) => {
     setError("");
     try {
-      const newMember = await axios.post(
-        `${config.poductionUrl}${config.requestBaseUrl}add-member`,
-        { name: data.memberName, phone: data.phone }
-      );
+      const newMember = await fireAddMember({ name: data.memberName, phone: data.phone });
       if (newMember.data) {
         dispatch(addMember({ newMember: newMember.data }));
         props.onClose("success");
         navigate("/host/members");
-      } else setError("Something went wrong");
+      } else throw new Error("Something went wrong");
     } catch (error) {
-      console.error("Error occurred:", error);
-      if (error.response.data.code === 11000 && error.response.status === 409)
-        setError("Member with this number already exist!");
-      else setError("An error occurred.");
+      console.error("Error in addMemberDetails:", error);
+      if (error?.message) {
+        setError(error.message)
+      } else {
+        setError("An error occurred.");
+      }
     }
-    resetTimer();
+    setTimeout(() => {
+      setError('')
+    }, 5000)
   };
 
   return (

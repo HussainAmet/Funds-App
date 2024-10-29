@@ -1,19 +1,20 @@
-#root {
+/* #root {
     min-height: 100vh;
-}
-  
-:root{
+} */
+
+:root {
     --primary-100: ;
     --primary-200: ;
     --primary-300: ;
     --secondary: ;
 }
 
-input{
+input {
     outline: none;
     width: 87%;
 }
-.tab{
+
+.tab {
     color: #9DA8B7;
     font-weight: 600;
     width: 100%;
@@ -24,20 +25,25 @@ input{
     justify-content: center;
     margin-left: 10px;
 }
-.tabFocus{
+
+.tabFocus {
     background-color: #DAE2ED;
     color: #434D5B;
 }
-.tab:hover{
+
+.tab:hover {
     background-color: #DAE2ED;
 }
-.cursor-pointer{
+
+.cursor-pointer {
     cursor: pointer;
 }
-.w-fit{
+
+.w-fit {
     width: fit-content;
 }
-.h-fit{
+
+.h-fit {
     height: fit-content;
 }
 
@@ -63,4 +69,11 @@ input{
 
 .bg-primary-300 {
     background-color: var(--primary-300)
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
 }

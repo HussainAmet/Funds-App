@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/joy/CircularProgress";
-//import { resetTimer } from "../hooks/reloadTimout"
 
 const Months = [
   "January",
@@ -52,12 +51,19 @@ export default function Details() {
         }
       });
       if (of === "savings") {
-        setSavingDetails(details);  
+        if (details.length !== 0) {
+          setSavingDetails(details);
+        } else {
+          handleChange(0)
+        }
       } else {
-        setLoanDetails(details);
+        if (details.length !== 0) {
+          setLoanDetails(details);
+        } else {
+          handleChange(0)
+        }
       }
     }
-    //resetTimer();
   };
 
   const data = useSelector((state) => state.member.memberDetails);
@@ -77,7 +83,6 @@ export default function Details() {
       yearArr = [...new Set(yearArr)]
       setYears(yearArr);
     }
-    //resetTimer();
   };
 
   const getYear = () => {
@@ -86,7 +91,6 @@ export default function Details() {
       setSavingDetails(currentMember.savingDetails);
       setLoanDetails(currentMember.loanDetails);
       commanYears(currentMember);
-      //resetTimer();
       if (of === "savings") {
         return currentMember.savingDetails;
       } else {
@@ -96,7 +100,6 @@ export default function Details() {
       setSavingDetails(data.savingDetails);
       setLoanDetails(data.loanDetails);
       commanYears(data);
-      //resetTimer();
       if (of === "savings") {
         return data.savingDetails;
       } else {
@@ -107,7 +110,6 @@ export default function Details() {
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
-    // getYear();
     handleChange(currentYear);
     setLoading(true);
     setTimeout(() => {

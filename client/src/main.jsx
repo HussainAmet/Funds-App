@@ -1,10 +1,10 @@
-import React, { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member } from "./components"
-import { Provider } from 'react-redux'
-import store from './store/store.js'
+import React, { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member } from "./components";
+import { Provider } from 'react-redux';
+import store from './store/store.js';
 
 const router = createBrowserRouter ([
   {

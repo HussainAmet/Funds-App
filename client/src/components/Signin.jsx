@@ -4,19 +4,18 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import {
   getAllMembersDetails,
   getMemberDetails,
   login,
 } from "../store/memberDetailsSlice";
-import config from "../config/config";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
-import { resetTimer } from "../hooks/reloadTimout";
+import { fireLogin } from "../firebase/auth";
+// import { execute } from "../firebase/auth";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -46,24 +45,45 @@ export default function Signin() {
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [phoneNumber, setPhoneNumber] = useState((localStorage.phone - 18) / 2);
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [otpGenerated, setOtpGenerated] = useState(false)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [password, setPassword] = useState();
 
   const logIn = async (data) => {
-    setLoading(true);
+    // execute();
     setError("");
+    setLoading(true);
+    if (!otpGenerated) {
+      try {
+        const userData = await fireLogin(data.number);
+        if (userData.data) {
+          setOtpGenerated(true)
+        } else {
+          throw new Error("Member Not Found");
+        }
+      } catch (error) {
+        console.error("Error in logIn:", error);
+        if (error?.message) {
+          setError(error.message)
+        } else {
+          setError("An error occurred.");
+        }
+      }
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      setLoading(false);
+      return
+    }
     try {
-      const userData = await axios.post(
-        `${config.poductionUrl}${config.requestBaseUrl}login`,
-        { phone: data.number }
-      );
+      const userData = await fireLogin(data.number);
       if (userData.data) {
         dispatch(login());
         dispatch(getMemberDetails({ member: userData.data.member.data }));
@@ -83,28 +103,30 @@ export default function Signin() {
           navigate("/member/dashboard/profile");
         } else {
           setLoading(false);
-          setError("Phone number not found");
+          throw new Error("Member Not Found");
         }
       } else {
         setLoading(false);
-        setError("Phone number not found");
+        throw new Error("Member Not Found");
       }
     } catch (error) {
       setLoading(false);
-      if (error?.response?.status === 404) setError("Member Not Found");
-      else setError("An error occurred");
+      console.error("Error in logIn:", error);
+      if (error?.message) {
+        setError(error.message)
+      } else {
+        setError("An error occurred.");
+      }
     }
     setTimeout(() => {
       setError("");
     }, 3000);
-    resetTimer();
   };
 
   useEffect(() => {
     const data = { number: (localStorage.phone - 18) / 2 };
     if (data.number) {
       logIn(data);
-      setPhoneNumber(data.number)
     }
   }, [localStorage]);
 
@@ -141,20 +163,18 @@ export default function Signin() {
             fontFamily: "monospace",
           }}>
             <p style={{margin: 1}}>Use These Sample Phone Numbers for Signin</p>
-            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Admin</span> : 1234567890</p>
-            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Host</span> : 1234512345,</p>
-            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 6789067890</p>
+            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Admin</span> : 9988776655</p>
+            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Host</span> : 9181716151,</p>
+            <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 1122334455</p>
           </Box> */}
-          {error && <span className="text-danger mt-1 ">{error}</span>}
-          <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1 }}>
+          {/* {error && <span className="text-danger mt-1 ">{error}</span>} */}
+          <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
             <TextField
               type="number"
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, "");
               }}
               margin="normal"
-              value={phoneNumber}
-              autoFocus={true}
               required
               fullWidth
               id="phone"
@@ -164,28 +184,36 @@ export default function Signin() {
               onWheel={(e) => e.target.blur()}
               {...register("number", {
                 required: true,
+                value: phoneNumber,
                 maxLength: { value: 10, message: "max" },
                 minLength: { value: 10, message: "min" },
               })}
             />
-            {errors.number &&
-              (errors.number.type === "minLength" ||
-                errors.number.type === "maxLength") && (
-                <span className="text-danger mt-1">Invalid Number</span>
-              )}
-            <TextField
-              type="password"
-              margin="normal"
-              value={password}
-              // required
-              fullWidth
-              id="password"
-              label="Password"
-              name="password"
-              // {...register("password", {
-              //   required: true,
-              // })}
-            />
+            <div className="d-flex flex-column " style={{ width: "310" }}>
+              {error && <span className="text-danger mt-1 ">{error}</span>}
+              {errors.number &&
+                (errors.number.type === "minLength" ||
+                  errors.number.type === "maxLength") && (
+                  <span className="text-danger mt-1">Invalid Number</span>
+                )}
+            </div>
+            {otpGenerated ?
+              <TextField
+                type="number"
+                margin="normal"
+                value={otp}
+                required
+                fullWidth
+                id="otp"
+                label="Enter OTP"
+                name="otp"
+                {...register("otp", {
+                  required: true,
+                })}
+              />
+              :
+              ''
+            }
             <Button
               type="submit"
               fullWidth
@@ -197,7 +225,6 @@ export default function Signin() {
                 "&:hover": { backgroundColor: "var(--primary-200)" },
                 "&:disabled": { backgroundColor: "var(--secondary)" },
               }}
-              disabled={loading}
               className="py-3"
             >
               {loading ? (
@@ -206,7 +233,10 @@ export default function Signin() {
                   style={{ color: "var(--primary-300)" }}
                 />
               ) : (
-                "Sign In"
+                otpGenerated ?
+                  "Sign In"
+                  :
+                  "Generate Otp"
               )}
             </Button>
             <Button
@@ -221,7 +251,7 @@ export default function Signin() {
               }}
               disabled={loading}
               className="py-3"
-              onClick={() => {logIn({number: 1234567890})}}
+              onClick={() => { logIn({ number: 9988776655 }) }}
             >
               {loading ? (
                 <CircularProgressWithLabel

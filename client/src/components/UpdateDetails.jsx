@@ -11,15 +11,13 @@ import Textarea from "@mui/joy/Textarea";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import moment from "moment-timezone";
-import axios from "axios";
-import config from "../config/config";
 import {
   getMemberDetails,
   getAllMembersDetails,
   logout,
 } from "../store/memberDetailsSlice";
 import { TextField } from "@mui/material";
-import { resetTimer } from "../hooks/reloadTimout";
+import { fireAddLoanInstallment, fireAddSavings, fireGiveLoan, fireLogin } from "../firebase/auth";
 
 const Months = [
   "January",
@@ -66,78 +64,47 @@ function UpdateDetails() {
           (saving) => saving.year == year
         );
         if (savings.find((saving) => saving.month === (Months.indexOf(month) + 1))) {
-          let error = {
-            response: { data: "Savings already added for this month" },
-          };
-          throw error;
+          throw new Error("Savings already added for this month");
+        }
+      } else if (what === "give-loan") {
+        if (selectedMember.loanRemaining && selectedMember.loanDate) {
+          throw new Error(`Loan is already given to ${selectedMember.auth.data.name}`);
+        }
+        if (selectedMember.totalSavings.totalSavings < amount) {
+          throw new Error("Total savings are not that much");
         }
       } else if (what === "add-loan-installment") {
         if (!selectedMember.loanRemaining) {
-          let error = { response: { data: "Member has no loan pending" } };
-          throw error;
+          throw new Error("Member has no loan pending");
+        }
+        if (selectedMember.loanRemaining < data.amount) {
+          throw new Error("Entered amount is geater than loan remaining");
         }
         let loans = selectedMember.loanDetails.filter(
           (loan) => loan.year == year
         );
         if (loans.find((loan) => loan.month === (Months.indexOf(month) + 1))) {
-          let error = {
-            response: { data: "Loan installment already added for this month" },
-          };
-          throw error;
-        }
-      } else if (what === "give-loan") {
-        if (selectedMember.loanRemaining && selectedMember.loanDate) {
-          let error = {
-            response: {
-              data: `Loan is already given to ${selectedMember.auth.data.name}`,
-            },
-          };
-          throw error;
+          throw new Error("Loan installment already added for this month");
         }
       }
-      if (what === "add-savings" || what === "add-loan-installment") {
-        const response = await axios.post(
-          `${config.poductionUrl}${config.requestBaseUrl}${
-            what === "add-savings" ? "add-savings" : "add-loan-installment"
-          }`,
-          { id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1), date }
-        );
+      if (what === "add-savings") {
+        const response = await fireAddSavings({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
         if (response.data === "ok" && response.status === 200) {
-          if (what === "add-savings") {
-            setSuccess("Savings Added");
-            setTimeout(() => {
-              setSuccess("");
-            }, 5000);
-            setMemberId("");
-            setAmount("");
-          } else {
-            setSuccess("Loan Installment Added");
-            setTimeout(() => {
-              setSuccess("");
-            }, 5000);
-            setMemberId("");
-            setAmount("");
-          }
+          setSuccess("Savings Added");
+        }
+      } else if (what === "add-loan-installment") {
+        const response = await fireAddLoanInstallment({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
+        if (response.data === "ok" && response.status === 200) {
+          setSuccess("Loan Installment Added");
         }
       } else if (what === "give-loan") {
         const loanDate = month + " " + year;
-        const response = await axios.post(
-          `${config.poductionUrl}${config.requestBaseUrl}give-loan`,
-          { id: data.member, amount: data.amount, loanDate, date }
-        );
+        const response = await fireGiveLoan({ id: data.member, amount: data.amount, loanDate })
         if (response.data === "ok" && response.status === 200) {
           setSuccess(`Loan given to ${selectedMember.auth.data.name}`);
-          setTimeout(() => {
-            setSuccess("");
-          }, 5000);
-          setMemberId("");
-          setAmount("");
         }
       }
-      const updatedData = await axios.post(
-        `${config.poductionUrl}${config.requestBaseUrl}login`,
-        { phone: currentMember?.auth?.data?.phone }
-      );
+      const updatedData = await fireLogin(currentMember?.auth?.data?.phone);
       if (updatedData.data) {
         dispatch(getMemberDetails({ member: updatedData.data.member.data }));
         dispatch(getAllMembersDetails({ allMembers: updatedData.data.members }));
@@ -145,14 +112,22 @@ function UpdateDetails() {
         dispatch(logout());
         navigate("/login");
       }
+      setTimeout(() => {
+        setSuccess("");
+      }, 5000);
+      setMemberId("");
+      setAmount("");
     } catch (error) {
-      console.log(error);
-      setError(error?.response?.data || "Something went wrong");
+      console.error("Error in updateDetails:", error);
+      if (error?.message) {
+        setError(error.message)
+      } else {
+        setError("An error occurred.");
+      }
       setTimeout(() => {
         setError("");
       }, 5000);
     }
-    resetTimer();
   };
 
   useEffect(() => {
