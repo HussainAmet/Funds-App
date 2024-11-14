@@ -16,6 +16,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 import { fireLogin } from "../firebase/auth";
 // import { execute } from "../firebase/auth";
+import { auth } from "../firebase/firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
 function CircularProgressWithLabel(props) {
   return (
@@ -45,7 +47,7 @@ export default function Signin() {
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState((localStorage.phone - 18) / 2);
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
@@ -56,32 +58,71 @@ export default function Signin() {
     formState: { errors },
   } = useForm();
 
+  const onCaptchaVerify = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+      callback: () => {
+        onSignup();
+      }
+    });
+  };
+
+  const onSignup = () => {
+    setLoading(true);
+    onCaptchaVerify();
+    const appVerifier = window.recaptchaVerifier;
+    const formatedPhoneNumber = '+91' + phoneNumber;
+
+    signInWithPhoneNumber(auth, formatedPhoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        setOtpGenerated(true);
+        setLoading(false);
+        alert('OTP sent');
+      })
+      .catch((error) => {
+        console.error('Error during OTP generation:', error);
+        setLoading(false);
+      });
+  };
+
+  const onOtpVerify = () => {
+    setLoading(true);
+    window.confirmationResult.confirm(otp).then(async (res) => {
+      console.log(res);
+      setLoading(false)
+    }).catch((err) => {
+      console.log(err);
+      setLoading(false)
+    })
+  }
+
   const logIn = async (data) => {
     // execute();
     setError("");
     setLoading(true);
-    if (!otpGenerated) {
-      try {
-        const userData = await fireLogin(data.number);
-        if (userData.data) {
-          setOtpGenerated(true)
-        } else {
-          throw new Error("Member Not Found");
-        }
-      } catch (error) {
-        console.error("Error in logIn:", error);
-        if (error?.message) {
-          setError(error.message)
-        } else {
-          setError("An error occurred.");
-        }
-      }
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-      setLoading(false);
-      return
-    }
+    // if (!otpGenerated) {
+    //   try {
+    //     const userData = await fireLogin(data.number);
+    //     if (userData.data) {
+    //       setOtpGenerated(true)
+    //     } else {
+    //       throw new Error("Member Not Found");
+    //     }
+    //   } catch (error) {
+    //     console.error("Error in logIn:", error);
+    //     if (error?.message) {
+    //       setError(error.message)
+    //     } else {
+    //       setError("An error occurred.");
+    //     }
+    //   }
+    //   setTimeout(() => {
+    //     setError("");
+    //   }, 3000);
+    //   setLoading(false);
+    //   return
+    // }
     try {
       const userData = await fireLogin(data.number);
       if (userData.data) {
@@ -145,6 +186,7 @@ export default function Signin() {
 
   return (
     <>
+      <div id="recaptcha-container"></div>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -168,7 +210,7 @@ export default function Signin() {
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 1122334455</p>
           </Box> */}
           {/* {error && <span className="text-danger mt-1 ">{error}</span>} */}
-          <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
+          {/* <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
             <TextField
               type="number"
               onInput={(e) => {
@@ -202,14 +244,12 @@ export default function Signin() {
                 type="number"
                 margin="normal"
                 value={otp}
+                onChange={setOtp}
                 required
                 fullWidth
                 id="otp"
                 label="Enter OTP"
                 name="otp"
-                {...register("otp", {
-                  required: true,
-                })}
               />
               :
               ''
@@ -262,7 +302,93 @@ export default function Signin() {
                 "Sign In as a Guest"
               )}
             </Button>
-          </Box>
+          </Box> */}
+
+          {!otpGenerated ?
+            <>
+              <TextField
+                type="number"
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                }}
+                margin="normal"
+                value={phoneNumber}
+                onChange={(e) => { setPhoneNumber(e.target.value) }}
+                required
+                fullWidth
+                id="phone"
+                label="Phone Number"
+                name="phone"
+                autoComplete="phone"
+                onWheel={(e) => e.target.blur()}
+              />
+              <Button
+                fullWidth
+                variant="outlined"
+                sx={{
+                  mb: 2,
+                  color: "var(--primary-300)",
+                  borderColor: "var(--primary-300)",
+                  "&:hover": { backgroundColor: "var(--primary-200)", color: "white", borderColor: "white" },
+                  "&:disabled": { backgroundColor: "var(--secondary)" },
+                }}
+                disabled={loading}
+                className="py-3"
+                onClick={onSignup}
+              >
+                {loading ? (
+                  <CircularProgressWithLabel
+                    value={progress}
+                    style={{ color: "var(--primary-300)" }}
+                  />
+                ) : (
+                  "Send Otp"
+                )}
+              </Button>
+            </>
+            :
+            <>
+              <TextField
+                type="number"
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                }}
+                margin="normal"
+                value={otp}
+                onChange={(e) => { setOtp(e.target.value) }}
+                required
+                fullWidth
+                id="otp"
+                label="OTP"
+                name="otp"
+                autoComplete="otp"
+                onWheel={(e) => e.target.blur()}
+              />
+              <Button
+                fullWidth
+                variant="outlined"
+                sx={{
+                  mb: 2,
+                  color: "var(--primary-300)",
+                  borderColor: "var(--primary-300)",
+                  "&:hover": { backgroundColor: "var(--primary-200)", color: "white", borderColor: "white" },
+                  "&:disabled": { backgroundColor: "var(--secondary)" },
+                }}
+                disabled={loading}
+                className="py-3"
+                onClick={onOtpVerify}
+              >
+                {loading ? (
+                  <CircularProgressWithLabel
+                    value={progress}
+                    style={{ color: "var(--primary-300)" }}
+                  />
+                ) : (
+                  "Verify Otp"
+                )}
+              </Button>
+            </>
+          }
         </Box>
       </Container>
     </>
