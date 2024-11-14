@@ -60,10 +60,7 @@ export default function Signin() {
 
   const onCaptchaVerify = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible',
-      callback: () => {
-        onSignup();
-      }
+      size: 'invisible'
     });
   };
 
