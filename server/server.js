@@ -11,28 +11,23 @@ import cors from "cors";
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
+
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true
 }));
+app.options('*', cors());
+// app.use((req, res, next) => {
+//   console.log('Incoming request:', {
+//     method: req.method,
+//     url: req.url,
+//     headers: req.headers,
+//   });
+//   next();
+// });
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
-
-// const Months = {
-//   January: 1,
-//   February: 2,
-//   March: 3,
-//   April: 4,
-//   May: 5,
-//   June: 6,
-//   July: 7,
-//   August: 8,
-//   September: 9,
-//   October: 10,
-//   November: 11,
-//   December: 12,
-// };
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
   const number = String(req.body.phone);
