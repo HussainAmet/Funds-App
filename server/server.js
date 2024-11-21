@@ -11,7 +11,11 @@ import cors from "cors";
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
@@ -255,14 +259,14 @@ app.delete(
     const phone = String(req.params.phone);
     const id = req.params.id;
     try {
-      const auth = await userModel.findOne({ _id: phone });
+      const auth = await userModel.findOne({ "data.phone": phone });
       const member = await memberDetailsModel.findOne({ _id: id });
       if (member.data.loanRemaining > 0) {
         res.status(400).send({ message: "Member has loan pending" });
       } else {
         const delDate = new Date();
         await userModel.findOneAndUpdate(
-          { _id: phone },
+          { "data.phone": phone },
           { "data.deletedOn": delDate, "data.active": false, "data.phone": `${auth.data.phone} del ${delDate}` }
         );
         await memberDetailsModel.findOneAndUpdate(
