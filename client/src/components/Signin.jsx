@@ -131,9 +131,10 @@ export default function Signin() {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin' : 'https://association-funds.vercel.app/'
+            'Access-Control-Allow-Origin' : 'https://funds-app-server.vercel.app'
           },
           withCredentials: true,
+          credentials: 'include'
         }
       );
       
