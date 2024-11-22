@@ -11,15 +11,12 @@ import cors from "cors";
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(cors(
-  // {
-  //   origin: 'http://localhost:5173',
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  //   allowedHeaders: ['Content-Type', 'Authorization'],
-  //   credentials: true,
-  // }
-));
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+}));
 // app.options('*', (req, res) => {
 //   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
 //   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -47,6 +44,10 @@ app.get("/", (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+app.post("/post", (req, res) => {
+  res.send({ message: "POST request successful" });
 });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
