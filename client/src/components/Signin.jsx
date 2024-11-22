@@ -128,12 +128,13 @@ export default function Signin() {
       const userData = await axios.post(
         `${config.poductionUrl}${config.requestBaseUrl}login`,
         { phone: data.number },
-        // {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   withCredentials: true,
-        // }
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin' : 'https://association-funds.vercel.app/'
+          },
+          withCredentials: true,
+        }
       );
       
       // firebase
