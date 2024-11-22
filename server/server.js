@@ -47,7 +47,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/post", (req, res) => {
-  res.send("POST request successful");
+  res.status(200).send("POST request successful");
 });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
