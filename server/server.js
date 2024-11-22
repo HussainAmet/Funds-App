@@ -27,14 +27,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type", 
-  "Accept, x-client-key, x-client-token, x-client-secret, Authorization");
-    next();
-  });
-
 // app.options(`${config.requestBaseUrl}login`, (req, res) => {
 //   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
 //   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -44,13 +36,13 @@ app.use(function (req, res, next) {
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*'); // Allow requests from your frontend
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specific HTTP methods
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
-//   res.header('Access-Control-Allow-Credentials', 'true'); // Important if you're using cookies or authentication
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Allow requests from your frontend
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specific HTTP methods
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
+  res.header('Access-Control-Allow-Credentials', 'true'); // Important if you're using cookies or authentication
+  next();
+});
 
 app.get("/", (req, res) => {
   try {
