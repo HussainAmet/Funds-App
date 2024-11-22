@@ -27,8 +27,14 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.post("/post", (req, res) => {
-  res.status(200).send("POST request successful");
+app.post("/post", async (req, res) => {
+  try {
+    const number = "9988776655";
+    const userData = await userModel.findOne({ "data.phone": number });
+    res.status(200).send("post request\n"+userData);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
