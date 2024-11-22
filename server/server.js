@@ -45,11 +45,11 @@ app.get("/", (req, res) => {
 });
 
 app.post(`${config.requestBaseUrl}login`, async (req, res) => {
+  console.log("123");
   const number = String(req.body.phone);
   try {
-    console.log("123");
-    const userData = await userModel.findOne({ "data.phone": number });
     console.log("456");
+    const userData = await userModel.findOne({ "data.phone": number });
     if (userData) {
       if (userData.data.active === true) {
         if (userData.data.role.includes("host")) {
