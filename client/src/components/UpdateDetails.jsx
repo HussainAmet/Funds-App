@@ -18,6 +18,8 @@ import {
 } from "../store/memberDetailsSlice";
 import { TextField } from "@mui/material";
 import { fireAddLoanInstallment, fireAddSavings, fireGiveLoan, fireLogin } from "../firebase/auth";
+import axios from "axios";
+import config from "../config/config";
 
 const Months = [
   "January",
@@ -87,24 +89,65 @@ function UpdateDetails() {
           throw new Error("Loan installment already added for this month");
         }
       }
-      if (what === "add-savings") {
-        const response = await fireAddSavings({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
+
+      // mongodb
+      if (what === "add-savings" || what === "add-loan-installment") {
+        const response = await axios.post(
+          `${config.poductionUrl}${config.requestBaseUrl}${
+            what === "add-savings" ? "add-savings" : "add-loan-installment"
+          }`,
+          { id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1), date }
+        );
+
+      // firebase
+      // if (what === "add-savings") {
+      //   const response = await fireAddSavings({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
+
         if (response.data === "ok" && response.status === 200) {
-          setSuccess("Savings Added");
+          // firebase
+          // setSuccess("Savings Added");
+
+          // mongodb
+          if (what === "add-savings") {
+            setSuccess("Savings Added");
+          } else {
+            setSuccess("Loan Installment Added");
+          }
         }
-      } else if (what === "add-loan-installment") {
-        const response = await fireAddLoanInstallment({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
-        if (response.data === "ok" && response.status === 200) {
-          setSuccess("Loan Installment Added");
-        }
+
+      // firebase
+      // else if (what === "add-loan-installment") {
+      //   const response = await fireAddLoanInstallment({ id: data.member, amount: data.amount, year, month: (Months.indexOf(month) + 1) })
+      //   if (response.data === "ok" && response.status === 200) {
+      //     setSuccess("Loan Installment Added");
+      //   }
+
       } else if (what === "give-loan") {
         const loanDate = month + " " + year;
-        const response = await fireGiveLoan({ id: data.member, amount: data.amount, loanDate })
+
+        // mongodb
+        const response = await axios.post(
+          `${config.poductionUrl}${config.requestBaseUrl}give-loan`,
+          { id: data.member, amount: data.amount, loanDate, date }
+        );
+
+        // firebase
+        // const response = await fireGiveLoan({ id: data.member, amount: data.amount, loanDate })
+
         if (response.data === "ok" && response.status === 200) {
           setSuccess(`Loan given to ${selectedMember.auth.data.name}`);
         }
       }
-      const updatedData = await fireLogin(currentMember?.auth?.data?.phone);
+
+      // mongodb
+      const updatedData = await axios.post(
+        `${config.poductionUrl}${config.requestBaseUrl}login`,
+        { phone: currentMember?.auth?.data?.phone }
+      );
+
+      // firebase
+      // const updatedData = await fireLogin(currentMember?.auth?.data?.phone);
+
       if (updatedData.data) {
         dispatch(getMemberDetails({ member: updatedData.data.member.data }));
         dispatch(getAllMembersDetails({ allMembers: updatedData.data.members }));

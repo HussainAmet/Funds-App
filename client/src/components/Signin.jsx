@@ -18,6 +18,8 @@ import { fireLogin } from "../firebase/auth";
 // import { execute } from "../firebase/auth";
 import { auth } from "../firebase/firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+import axios from "axios";
+import config from "../config/config";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -50,49 +52,49 @@ export default function Signin() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [otp, setOtp] = useState('');
-  const [otpGenerated, setOtpGenerated] = useState(false)
+  // const [otp, setOtp] = useState('');
+  // const [otpGenerated, setOtpGenerated] = useState(false)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onCaptchaVerify = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible'
-    });
-  };
+  // const onCaptchaVerify = () => {
+  //   window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+  //     size: 'invisible'
+  //   });
+  // };
 
-  const onSignup = () => {
-    setLoading(true);
-    onCaptchaVerify();
-    const appVerifier = window.recaptchaVerifier;
-    const formatedPhoneNumber = '+91' + phoneNumber;
+  // const onSignup = () => {
+  //   setLoading(true);
+  //   onCaptchaVerify();
+  //   const appVerifier = window.recaptchaVerifier;
+  //   const formatedPhoneNumber = '+91' + phoneNumber;
 
-    signInWithPhoneNumber(auth, formatedPhoneNumber, appVerifier)
-      .then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        setOtpGenerated(true);
-        setLoading(false);
-        alert('OTP sent');
-      })
-      .catch((error) => {
-        console.error('Error during OTP generation:', error);
-        setLoading(false);
-      });
-  };
+  //   signInWithPhoneNumber(auth, formatedPhoneNumber, appVerifier)
+  //     .then((confirmationResult) => {
+  //       window.confirmationResult = confirmationResult;
+  //       setOtpGenerated(true);
+  //       setLoading(false);
+  //       alert('OTP sent');
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error during OTP generation:', error);
+  //       setLoading(false);
+  //     });
+  // };
 
-  const onOtpVerify = () => {
-    setLoading(true);
-    window.confirmationResult.confirm(otp).then(async (res) => {
-      console.log(res);
-      setLoading(false)
-    }).catch((err) => {
-      console.log(err);
-      setLoading(false)
-    })
-  }
+  // const onOtpVerify = () => {
+  //   setLoading(true);
+  //   window.confirmationResult.confirm(otp).then(async (res) => {
+  //     console.log(res);
+  //     setLoading(false)
+  //   }).catch((err) => {
+  //     console.log(err);
+  //     setLoading(false)
+  //   })
+  // }
 
   const logIn = async (data) => {
     // execute();
@@ -121,7 +123,22 @@ export default function Signin() {
     //   return
     // }
     try {
-      const userData = await fireLogin(data.number);
+      // mongodb
+      console.log('123');
+      const userData = await axios.post(
+        `${config.poductionUrl}${config.requestBaseUrl}login`,
+        { phone: data.number },
+        // {
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   withCredentials: true,
+        // }
+      );
+      
+      // firebase
+      // const userData = await fireLogin(data.number);
+
       if (userData.data) {
         dispatch(login());
         dispatch(getMemberDetails({ member: userData.data.member.data }));
@@ -148,6 +165,7 @@ export default function Signin() {
         throw new Error("Member Not Found");
       }
     } catch (error) {
+      console.log('456');
       setLoading(false);
       console.error("Error in logIn:", error);
       if (error?.message) {
@@ -206,8 +224,8 @@ export default function Signin() {
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Host</span> : 9181716151,</p>
             <p style={{margin: 1}}><span style={{fontWeight: 600,}}>Member</span> : 1122334455</p>
           </Box> */}
-          {/* {error && <span className="text-danger mt-1 ">{error}</span>} */}
-          {/* <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
+          {error && <span className="text-danger mt-1 ">{error}</span>}
+          <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
             <TextField
               type="number"
               onInput={(e) => {
@@ -236,7 +254,7 @@ export default function Signin() {
                   <span className="text-danger mt-1">Invalid Number</span>
                 )}
             </div>
-            {otpGenerated ?
+            {/* {otpGenerated ?
               <TextField
                 type="number"
                 margin="normal"
@@ -250,7 +268,7 @@ export default function Signin() {
               />
               :
               ''
-            }
+            } */}
             <Button
               type="submit"
               fullWidth
@@ -270,10 +288,10 @@ export default function Signin() {
                   style={{ color: "var(--primary-300)" }}
                 />
               ) : (
-                otpGenerated ?
-                  "Sign In"
-                  :
-                  "Generate Otp"
+                // otpGenerated ?
+                "Sign In"
+                // :
+                // "Generate Otp"
               )}
             </Button>
             <Button
@@ -299,9 +317,9 @@ export default function Signin() {
                 "Sign In as a Guest"
               )}
             </Button>
-          </Box> */}
+          </Box>
 
-          {!otpGenerated ?
+          {/* {!otpGenerated ?
             <>
               <TextField
                 type="number"
@@ -385,7 +403,7 @@ export default function Signin() {
                 )}
               </Button>
             </>
-          }
+          } */}
         </Box>
       </Container>
     </>

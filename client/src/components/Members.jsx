@@ -15,6 +15,8 @@ import AddMember from "./AddMember";
 import { useDispatch } from "react-redux";
 import { delMember } from "../store/memberDetailsSlice";
 import { fireDeleteMember } from "../firebase/auth";
+import axios from "axios";
+import config from "../config/config";
 
 export default function Members() {
   const [input, setInput] = useState("");
@@ -57,13 +59,21 @@ export default function Members() {
       if (member.data.loanRemaining > 0) {
         throw new Error("Member has loan pending");
       }
-      const response = await fireDeleteMember({ id, phone, saving });
-      if (response.data === "ok" && response.status === 200) {
+
+      // mongodb
+      const response = await axios.delete(
+        `${config.poductionUrl}${config.requestBaseUrl}delete-member/${id}/${phone}`
+      );
+      
+      if (response.data.message === "ok") {
         dispatch(delMember({ id, saving }));
+      
+      // firebase
+      // const response = await fireDeleteMember({ id, phone, saving });
+      // if (response.data === "ok" && response.status === 200) {
+      //   dispatch(delMember({ id, saving }));
+
         setSuccess("Member Deleted");
-        setTimeout(() => {
-          setSuccess("");
-        }, 5000);
       } else {
         throw new Error("Something went wrong");
       }
@@ -75,6 +85,10 @@ export default function Members() {
         setError("An error occurred.");
       }
     }
+    setTimeout(() => {
+      setSuccess("");
+      setError("");
+    }, 5000);
   };
 
   const handleAddMemberClick = () => {
