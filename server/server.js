@@ -20,12 +20,12 @@ app.use(cors({
   credentials: true // Allow credentials if needed
 }));
 
-app.options(`${config.requestBaseUrl}login`, (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.sendStatus(200);
-});
+// app.options(`${config.requestBaseUrl}login`, (req, res) => {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.sendStatus(200);
+// });
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
