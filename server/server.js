@@ -7,11 +7,17 @@ import {
   totalSavingsModel,
 } from "./schemas/index.js";
 import cors from "cors";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const port = config.port || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
   origin: "http://localhost:5173/",
