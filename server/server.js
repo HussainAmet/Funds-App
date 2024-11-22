@@ -17,9 +17,11 @@ app.use(cors());
 
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   try {
-    res.status(200).send("Welcome to Funds App");
+    const number = "9988776655";
+    const userData = await userModel.findOne({ "data.phone": number });
+    res.status(200).send("Welcome to Funds App\n"+userData);
   } catch (error) {
     res.status(500).send(error);
   }
