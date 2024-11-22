@@ -37,7 +37,7 @@ app.use(cors({
 mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://association-funds.vercel.app/'); // Allow requests from your frontend
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Allow requests from your frontend
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specific HTTP methods
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
   res.header('Access-Control-Allow-Credentials', 'true'); // Important if you're using cookies or authentication
