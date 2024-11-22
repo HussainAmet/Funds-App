@@ -78,13 +78,13 @@ app.post(`${config.requestBaseUrl}login`, async (req, res) => {
             ]);
           res.status(200).send({ member });
         } else {
-          res.status(404).send("");
+          res.status(404).send("Not Found");
         }
       } else {
-        res.status(404).send("");
+        res.status(404).send("Not Found");
       }
     } else {
-      res.status(404).send("");
+      res.status(404).send("Not Found");
     }
   } catch (error) {
     throw error;
