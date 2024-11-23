@@ -270,10 +270,7 @@ export default function Signin() {
                   style={{ color: "var(--primary-300)" }}
                 />
               ) : (
-                otpGenerated ?
-                  "Sign In"
-                  :
-                  "Generate Otp"
+                "Sign In"
               )}
             </Button>
             <Button
