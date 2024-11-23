@@ -5,8 +5,15 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member } from "./components";
 import { Provider } from 'react-redux';
 import store from './store/store.js';
+// import TestForOTP from './components/TestForOTP.jsx';
 
 const router = createBrowserRouter ([
+  // {
+  //   path: "/test-otp",
+  //   element: (
+  //     <TestForOTP />
+  //   )
+  // },
   {
     path: "/",
     element: (
