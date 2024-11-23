@@ -7,8 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addMember } from "../store/memberDetailsSlice";
 import { fireAddMember } from "../firebase/auth";
-import axios from "axios";
-import config from "../config/config";
 
 const style = {
   position: "absolute",
@@ -47,15 +45,7 @@ function AddMember(props) {
   const addMemberDetails = async (data) => {
     setError("");
     try {
-      // mongodb
-      const newMember = await axios.post(
-        `${config.poductionUrl}${config.requestBaseUrl}add-member`,
-        { name: data.memberName, phone: data.phone }
-      );
-
-      // firebase
-      // const newMember = await fireAddMember({ name: data.memberName, phone: data.phone });
-
+      const newMember = await fireAddMember({ name: data.memberName, phone: data.phone });
       if (newMember.data) {
         dispatch(addMember({ newMember: newMember.data }));
         props.onClose("success");

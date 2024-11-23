@@ -16,10 +16,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 import { fireLogin } from "../firebase/auth";
 // import { execute } from "../firebase/auth";
-import { auth } from "../firebase/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
-import axios from "axios";
-import config from "../config/config";
+// import { auth } from "../firebase/firebase";
+// import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
 function CircularProgressWithLabel(props) {
   return (
@@ -123,24 +121,7 @@ export default function Signin() {
     //   return
     // }
     try {
-      // mongodb
-      console.log('123');
-      const userData = await axios.post(
-        `${config.poductionUrl}${config.requestBaseUrl}login`,
-        { phone: data.number },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin' : 'https://funds-app-server.vercel.app'
-          },
-          withCredentials: true,
-          credentials: 'include'
-        }
-      );
-      
-      // firebase
-      // const userData = await fireLogin(data.number);
-
+      const userData = await fireLogin(data.number);
       if (userData.data) {
         dispatch(login());
         dispatch(getMemberDetails({ member: userData.data.member.data }));
@@ -167,7 +148,6 @@ export default function Signin() {
         throw new Error("Member Not Found");
       }
     } catch (error) {
-      console.log('456');
       setLoading(false);
       console.error("Error in logIn:", error);
       if (error?.message) {
@@ -290,10 +270,10 @@ export default function Signin() {
                   style={{ color: "var(--primary-300)" }}
                 />
               ) : (
-                // otpGenerated ?
-                "Sign In"
-                // :
-                // "Generate Otp"
+                otpGenerated ?
+                  "Sign In"
+                  :
+                  "Generate Otp"
               )}
             </Button>
             <Button

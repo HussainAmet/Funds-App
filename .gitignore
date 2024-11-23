@@ -26,3 +26,4 @@ dist-ssr
 Association_Funds_New_Data
 Association_Funds_Old_Data
 /components_firebase
+/components_mongo
