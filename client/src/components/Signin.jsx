@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { generatePath, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import {
@@ -15,7 +15,6 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 import { fireLogin } from "../firebase/auth";
-
 function CircularProgressWithLabel(props) {
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>
@@ -128,7 +127,6 @@ export default function Signin() {
             alignItems: "center",
           }}
         >
-          {error && <span className="text-danger mt-1 ">{error}</span>}
           <Box component="form" onSubmit={handleSubmit(logIn)} sx={{ mt: 1, width: '100%' }}>
             <TextField
               type="number"

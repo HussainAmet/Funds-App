@@ -11,10 +11,9 @@ import {
     deleteField,
     increment,
     arrayUnion,
+    writeBatch,
 } from "firebase/firestore";
 import { app } from "./firebase";
-import axios from "axios";
-import config from "../config/config";
 import generateUniqueId from 'generate-unique-id';
 
 const fundsApp = getFirestore(app);
@@ -30,12 +29,12 @@ const getMembers = async () => {
             where("data.auth.data.active", "==", true)
         );
         const querySnapshot = await getDocs(membersQuery);
-    
+
         const memberDetailPromises = querySnapshot.docs.map(async (member) => {
-            let memberDetail = {...member.data(), _id: member.id};
+            let memberDetail = { ...member.data(), _id: member.id };
 
             const totalSavingsRef = memberDetail.data.totalSavings;
-        
+
             if (totalSavingsRef) {
                 const totalSavingsDoc = await getDoc(totalSavingsRef);
                 if (totalSavingsDoc.exists()) {
@@ -66,7 +65,7 @@ const getMemberDetails = async (phone) => {
             where("data.auth.data.phone", "==", String(phone)),
             where("data.auth.data.active", "==", true)
         );
-        
+
         const memberDetailsSnapshot = await getDocs(memberDetails);
 
         if (memberDetailsSnapshot.empty) {
@@ -76,7 +75,7 @@ const getMemberDetails = async (phone) => {
         const memberDetailPromises = [];
 
         memberDetailsSnapshot.forEach((memberDoc) => {
-            let memberDetail = {...memberDoc.data(), _id: memberDoc.id};
+            let memberDetail = { ...memberDoc.data(), _id: memberDoc.id };
             const totalSavingsRef = memberDetail.data.totalSavings;
 
             if (totalSavingsRef) {
@@ -111,6 +110,9 @@ export const fireLogin = async (phone) => {
 
     try {
         const member = await getMemberDetails(phone);
+        if (member?.data?.auth?.data?.blocked) {
+            throw new Error("Your number is blocked");
+        }
         if (member?.data?.auth?.data?.role.includes("host")) {
             const members = await getMembers()
             return { data: { member, members } }
@@ -279,46 +281,24 @@ export const fireDeleteMember = async ({ id, phone, saving }) => {
     }
 }
 
-// export const fireAddMemberManual = async () => {
+// export const fireAddNewFieldInAllMembers = async () => {
 //     if (!navigator.onLine) {
 //         throw new Error("No internet connection");
 //     }
 
 //     try {
-//         const response = await axios.post(`${config.poductionUrl}${config.requestBaseUrl}login`, { phone: "8739975253" })
 
-//         const totalSavingsDocRef = doc(fundsApp, "totalsavings/totalSavings");
-//         response.data.members.map(async (member) => {
-//             await addDoc(collection(fundsApp, "members"), {
-//                 data: {
-//                     saving: member.data.saving,
-//                     auth: {
-//                         data: {
-//                             active: true,
-//                             name: member.data.auth.data.name,
-//                             phone: member.data.auth.data.phone,
-//                             role: member.data.auth.data.role,
-//                         },
-//                     },
-//                     savingDetails: member.data.savingDetails,
-//                     loanDetails: member.data.loanDetails,
-//                     loanDate: member.data.loanDate || "",
-//                     loanRemaining: member.data.loanRemaining || 0,
-//                     totalSavings: totalSavingsDocRef,
-//                 }
-//             });
+//         const membersCollectionRef = collection(fundsApp, "members");
+//         const batch = writeBatch(fundsApp);
+//         const querySnapshot = await getDocs(membersCollectionRef);
+//         querySnapshot.forEach(doc => {
+//             batch.update(doc.ref, { ["data.auth.data.blocked"]: false });
 //         });
 
-//         return { data: "ok", status: 200 };
+//         await batch.commit();
+
 //     } catch (error) {
 //         console.error("Error in fireAddMemberManual:", error);
 //         throw error;
 //     }
-// }
-
-// export const execute = async () => {
-//     // const _phone = "6789067890"
-//     // const _name = "oooo"
-//     const data = await fireAddMemberManual();
-//     console.log("execute",data.data);
 // }
