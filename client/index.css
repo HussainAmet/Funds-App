@@ -2,6 +2,13 @@
     min-height: 100vh;
 } */
 
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}
+
 :root {
     --primary-100: ;
     --primary-200: ;
@@ -69,11 +76,4 @@ input {
 
 .bg-primary-300 {
     background-color: var(--primary-300)
-}
-
-html,
-body,
-#root {
-    height: 100%;
-    margin: 0;
 }

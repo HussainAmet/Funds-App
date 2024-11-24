@@ -13,10 +13,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/memberDetailsSlice";
-import Tooltip from "@mui/material/Tooltip";
-import InfoIcon from "@mui/icons-material/Info";
-import Zoom from "@mui/material/Zoom";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
+// import Tooltip from "@mui/material/Tooltip";
+// import InfoIcon from "@mui/icons-material/Info";
+// import Zoom from "@mui/material/Zoom";
+// import ClickAwayListener from "@mui/material/ClickAwayListener";
 import config from "../../config/config";
 
 export default function Header() {
@@ -27,15 +27,15 @@ export default function Header() {
   const data = useSelector((state) => state.member.memberDetails);
   const dispatch = useDispatch();
 
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
+  // const handleTooltipClose = () => {
+  //   setOpen(false);
+  // };
 
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
+  // const handleTooltipOpen = () => {
+  //   setOpen(true);
+  // };
 
   const toggleDrawer = (open) => (event) => {
     if (
