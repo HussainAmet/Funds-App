@@ -90,6 +90,7 @@ export default function Signin() {
       } else {
         setError("An error occurred.");
       }
+      localStorage.removeItem("phone");
     }
     setTimeout(() => {
       setError("");

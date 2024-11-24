@@ -144,6 +144,7 @@ export const fireAddMember = async ({ name, phone }) => {
                 auth: {
                     data: {
                         active: true,
+                        blocked: false,
                         name: String(name),
                         phone: String(phone),
                         role: ["member"],
@@ -277,6 +278,25 @@ export const fireDeleteMember = async ({ id, phone, saving }) => {
         return { data: "ok", status: 200 };
     } catch (error) {
         console.error("Error in fireDeleteMember:", error);
+        throw error;
+    }
+}
+
+export const fireBlockUnblockMember = async ({ id }) => {
+    if (!navigator.onLine) {
+        throw new Error("No internet connection");
+    }
+
+    try {
+        const memberRef = doc(fundsApp, 'members', String(id));
+        const querySnapshot = await getDoc(memberRef);
+        await updateDoc(memberRef, {
+            "data.auth.data.blocked": !querySnapshot.data().data?.auth?.data?.blocked,
+        });
+
+        return { data: "ok", status: 200 };
+    } catch (error) {
+        console.error("Error in fireBlockUnblockMember:", error);
         throw error;
     }
 }

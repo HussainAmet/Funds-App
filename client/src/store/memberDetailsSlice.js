@@ -57,6 +57,12 @@ const postSlice = createSlice ({
             state.allMembersDetails = state.allMembersDetails.filter((member) => member._id !== action.payload.id)
             state.memberDetails.totalSavings.totalSavings = state.memberDetails.totalSavings.totalSavings - action.payload.saving
         },
+        blockUnblock: (state, action) => {
+            const foundMember = state.allMembersDetails.find((member) => member._id === action.payload.id)
+            if (foundMember) {
+                foundMember.data.auth.data.blocked = !foundMember.data.auth.data.blocked;
+            }
+        },
         logout: (state, action) => {
             state.status = false;
             state.memberDetails = {};
@@ -65,6 +71,6 @@ const postSlice = createSlice ({
     }
 })
 
-export const { login, getMemberDetails, getAllMembersDetails, addMember, delMember, logout } = postSlice.actions;
+export const { login, getMemberDetails, getAllMembersDetails, addMember, delMember, blockUnblock, logout } = postSlice.actions;
 
 export default postSlice.reducer;

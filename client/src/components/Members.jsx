@@ -13,8 +13,8 @@ import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AddMember from "./AddMember";
 import { useDispatch } from "react-redux";
-import { delMember } from "../store/memberDetailsSlice";
-import { fireDeleteMember } from "../firebase/auth";
+import { delMember, blockUnblock } from "../store/memberDetailsSlice";
+import { fireDeleteMember, fireBlockUnblockMember } from "../firebase/auth";
 
 export default function Members() {
   const [input, setInput] = useState("");
@@ -25,18 +25,23 @@ export default function Members() {
   const [showAddMember, setShowAddMember] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [open, setOpen] = useState(false);
-  const [delId, setDelId] = useState("");
-  const [delPhone, setDelPhone] = useState("");
-  const [delName, setDelName] = useState("");
-  const [delSaving, setDelSaving] = useState();
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  const [openActionModal, setOpenActionModal] = useState(false);
+  const [actionMemberId, setActionMemberId] = useState("");
+  const [actionMemberPhone, setActionMemberPhone] = useState("");
+  const [actionMemberName, setActionMemberName] = useState("");
+  const [actionMemberSaving, setActionMemberSaving] = useState();
+  const [actionMemberBlocked, setActionMemberBlocked] = useState();
+  const [action, setAction] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const members = useSelector((state) => state.member.allMembersDetails);
   const currentMember = useSelector((state) => state.member.memberDetails);
-  const totalLoanRemaining = useSelector((state) => state.member.totalLoanRemaining);
+  const totalLoanRemaining = useSelector(
+    (state) => state.member.totalLoanRemaining
+  );
 
   const handleChange = (e) => {
     const { value } = e.target;
@@ -45,7 +50,7 @@ export default function Members() {
       member.data.auth.data.name.toLowerCase().includes(value.toLowerCase())
     );
     if (filteredMembers.length === 0) {
-      setSelectedMember(memberData)
+      setSelectedMember(memberData);
     } else {
       setSelectedMember(filteredMembers);
     }
@@ -53,7 +58,7 @@ export default function Members() {
 
   const deleteMember = async ({ id, phone, saving }) => {
     try {
-      const member = members.find((member) => member._id === id)
+      const member = members.find((member) => member._id === id);
       if (member.data.loanRemaining > 0) {
         throw new Error("Member has loan pending");
       }
@@ -61,9 +66,6 @@ export default function Members() {
       if (response.data === "ok" && response.status === 200) {
         dispatch(delMember({ id, saving }));
         setSuccess("Member Deleted");
-        setTimeout(() => {
-          setSuccess("");
-        }, 5000);
       } else {
         throw new Error("Something went wrong");
       }
@@ -75,6 +77,33 @@ export default function Members() {
         setError("An error occurred.");
       }
     }
+    setTimeout(() => {
+      setSuccess("");
+      setError("");
+    }, 5000);
+  };
+
+  const blockUnblockMember = async ({ id }) => {
+    try {
+      const response = await fireBlockUnblockMember({ id });
+      if (response.data === "ok" && response.status === 200) {
+        dispatch(blockUnblock({ id }));
+        setSuccess(`Member ${actionMemberBlocked ? "Unblocked" : "Blocked"}`);
+      } else {
+        throw new Error("Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error in blockUnblockMember:", error);
+      if (error?.message) {
+        setError(error.message);
+      } else {
+        setError("An error occurred.");
+      }
+    }
+    setTimeout(() => {
+      setSuccess("");
+      setError("");
+    }, 5000);
   };
 
   const handleAddMemberClick = () => {
@@ -109,16 +138,14 @@ export default function Members() {
         <p className="fs-2 text-center m-0">
           Total Balance: {memberDetails?.totalSavings?.totalSavings}
         </p>
-        <p className="fs-2 text-center">
-          Total Loan: {totalLoanRemaining}
-        </p>
+        <p className="fs-2 text-center">Total Loan: {totalLoanRemaining}</p>
       </div>
       <div className="d-flex w-100 mb-3 d-flex justify-content-around ">
         <input
           type="text"
           placeholder="Search Member"
           className="ms-3 w-50  border-top-0 border-end-0 border-start-0"
-          style={{ borderColor: 'var(--primary-300)' }}
+          style={{ borderColor: "var(--primary-300)" }}
           maxLength={50}
           value={input}
           onChange={handleChange}
@@ -138,21 +165,17 @@ export default function Members() {
         </Link>
       </div>
       <Outlet />
-      {
-        error && (
-          <span className="fw-semibold text-white mt-2 mb-2 p-2 d-block text-center bg-danger">
-            {error}
-          </span>
-        )
-      }
-      {
-        success && (
-          <span className="fw-semibold text-bg-success mt-2 mb-2 p-2 d-block text-center">
-            {success}
-          </span>
-        )
-      }
-      <Sheet sx={{ overflowY: 'auto' }}>
+      {error && (
+        <span className="fw-semibold text-white mt-2 mb-2 p-2 d-block text-center bg-danger">
+          {error}
+        </span>
+      )}
+      {success && (
+        <span className="fw-semibold text-bg-success mt-2 mb-2 p-2 d-block text-center">
+          {success}
+        </span>
+      )}
+      <Sheet sx={{ overflowY: "auto" }}>
         <Table
           aria-label="table with sticky header"
           stickyHeader
@@ -175,43 +198,53 @@ export default function Members() {
               <tr key={member._id}>
                 <td
                   onClick={() => {
-                    navigate(
-                      `/member-profile/${member._id}/dashboard/profile`
-                    );
+                    navigate(`/member-profile/${member._id}/dashboard/profile`);
                   }}
                   className="ps-4 text-start cursor-pointer"
                 >
                   {member.data.auth.data.name}
                 </td>
                 <td className="text-center">{member.data.saving}</td>
-                {memberDetails?.auth?.data?.role?.includes("admin") ?
+                {memberDetails?.auth?.data?.role?.includes("admin") ? (
                   <td className="text-center">
-                    {member?.data?.auth?.data?.role?.includes("admin") || member?.data?.auth?.data?.role?.includes("host") || member?.data?.auth?.data?.name === "Member" ?
+                    {member?.data?.auth?.data?.role?.includes("admin") ||
+                      member?.data?.auth?.data?.role?.includes("host") ||
+                      member?.data?.auth?.data?.name === "Member" ? (
                       "-"
-                      :
+                    ) : (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        onClick={() => {
-                          setDelId(member._id);
-                          setDelName(member.data.auth.data.name);
-                          setDelPhone(member.data.auth.data.phone);
-                          setDelSaving(member.data.saving);
-                          setOpen(true);
-                        }}
-                        width="25"
-                        height="25"
-                        fill="currentColor"
+                        width="28"
+                        height="28"
+                        viewBox="0 0 48 48"
                         className="bi bi-person-dash cursor-pointer"
-                        viewBox="0 0 16 16"
+                        onClick={() => {
+                          setActionMemberId(member._id);
+                          setActionMemberName(member.data.auth.data.name);
+                          setActionMemberPhone(member.data.auth.data.phone)
+                          setActionMemberBlocked(member.data.auth.data.blocked)
+                          setActionMemberSaving(member.data.saving)
+                          setOpenActionModal(true);
+                        }}
                       >
-                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
+                        <g
+                          fill="none"
+                          stroke="black"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                        >
+                          <rect width="30" height="36" x="9" y="8" rx="2" />
+                          <path
+                            strokeLinecap="round"
+                            d="M18 4v6m12-6v6m-14 9h16m-16 8h12m-12 8h8"
+                          />
+                        </g>
                       </svg>
-                    }
+                    )}
                   </td>
-                  :
+                ) : (
                   ""
-                }
+                )}
               </tr>
             ))}
           </tbody>
@@ -230,10 +263,77 @@ export default function Members() {
           </tfoot>
         </Table>
       </Sheet>
-      {
-        showAddMember && <AddMember onClose={handleAddMemberClose} />
-      }
-      <Modal open={open} onClose={() => setOpen(false)}>
+      {showAddMember && <AddMember onClose={handleAddMemberClose} />}
+
+      <Modal open={openActionModal} onClose={() => setOpenActionModal(false)}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Take Action
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            <p>
+              <span className="text-primary fw-bold">{actionMemberName}</span>
+            </p>
+          </DialogContent>
+          <div className="d-flex flex-column gap-3">
+            <Button
+              variant="solid"
+              color="danger"
+              onClick={() => {
+                setAction(actionMemberBlocked ? "Unblock" : "Block");
+                setOpenConfirmationModal(true);
+              }}
+            >
+              <div className="d-flex align-items-center gap-3">
+                <svg
+                  width="24"
+                  height="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="white"
+                    d="M10 4a4 4 0 0 0-4 4a4 4 0 0 0 4 4a4 4 0 0 0 4-4a4 4 0 0 0-4-4m0 2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2a2 2 0 0 1 2-2m0 7c-2.67 0-8 1.33-8 4v3h9.5a6.5 6.5 0 0 1-.47-1.9H3.9V17c0-.64 3.13-2.1 6.1-2.1c.5 0 1 .05 1.5.13a6.5 6.5 0 0 1 1.05-1.74C11.61 13.1 10.71 13 10 13m7.5 0C15 13 13 15 13 17.5s2 4.5 4.5 4.5s4.5-2 4.5-4.5s-2-4.5-4.5-4.5m0 1.5c1.66 0 3 1.34 3 3c0 .56-.15 1.08-.42 1.5L16 14.92c.42-.27.94-.42 1.5-.42M14.92 16L19 20.08c-.42.27-.94.42-1.5.42c-1.66 0-3-1.34-3-3c0-.56.15-1.08.42-1.5"
+                  />
+                </svg>
+                <p className="m-0">{actionMemberBlocked ? "Unblock" : "Block"} Member</p>
+              </div>
+            </Button>
+            <Button
+              variant="outlined"
+              color="danger"
+              onClick={() => {
+                setAction("Delete");
+                setOpenConfirmationModal(true);
+              }}
+            >
+              <div className="d-flex align-items-center gap-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                  <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
+                </svg>
+                <p className="m-0">Delete Member</p>
+              </div>
+            </Button>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={() => { setOpenActionModal(false) }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </ModalDialog>
+      </Modal>
+      <Modal open={openConfirmationModal} onClose={() => setOpenConfirmationModal(false)}>
         <ModalDialog variant="outlined" role="alertdialog">
           <DialogTitle>
             <WarningRoundedIcon />
@@ -242,8 +342,9 @@ export default function Members() {
           <Divider />
           <DialogContent>
             <p>
-              Are you sure you want to delete the member{" "}
-              <span className="text-primary fw-bold">{delName}</span> ?
+              Are you sure you want to <span className="fw-bold">{action}</span>{" "}
+              the member{" "}
+              <span className="text-primary fw-bold">{actionMemberName}</span> ?
             </p>
           </DialogContent>
           <DialogActions>
@@ -251,16 +352,23 @@ export default function Members() {
               variant="solid"
               color="danger"
               onClick={() => {
-                deleteMember({ id: delId, phone: delPhone, saving: delSaving });
-                setOpen(false);
+                action === "Delete"
+                  ? deleteMember({
+                    id: actionMemberId,
+                    phone: actionMemberPhone,
+                    saving: actionMemberSaving,
+                  })
+                  : blockUnblockMember({ id: actionMemberId });
+                setOpenConfirmationModal(false);
+                setOpenActionModal(false);
               }}
             >
-              Delete Member
+              {action} Member
             </Button>
             <Button
               variant="plain"
               color="neutral"
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenConfirmationModal(false)}
             >
               Cancel
             </Button>
