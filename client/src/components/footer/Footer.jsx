@@ -5,7 +5,7 @@ function Footer() {
   return (
     <>
         <div className="text-center p-1 bg-light">
-            <p className='m-0'><a href="/aboutUs.html">About us</a> | <a href="/getInTouch.html">Get in touch</a></p>
+            <p className='m-0'><Link to="/about-us">About us</Link> | <Link to="/get-in-touch">Get in touch</Link></p>
         </div>
     </>
   )

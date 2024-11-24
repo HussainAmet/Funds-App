@@ -2,7 +2,7 @@ import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member } from "./components";
+import { Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member, AboutUs, GetInTouch } from "./components";
 import { Provider } from 'react-redux';
 import store from './store/store.js';
 // import TestForOTP from './components/TestForOTP.jsx';
@@ -14,6 +14,18 @@ const router = createBrowserRouter ([
   //     <TestForOTP />
   //   )
   // },
+  {
+    path: "/about-us",
+    element: (
+      <AboutUs />
+    )
+  },
+  {
+    path: "/get-in-touch",
+    element: (
+      <GetInTouch />
+    )
+  },
   {
     path: "/",
     element: (

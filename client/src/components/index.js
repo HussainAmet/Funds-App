@@ -11,5 +11,7 @@ import UpdateDetails from "./UpdateDetails";
 import AuthLayout from "./AuthLayout";
 import Member from './Member'
 import Footer from './footer/Footer'
+import AboutUs from "./about_us/AboutUs";
+import GetInTouch from "./about_us/GetInTouch";
 
-export { Header, Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member, Footer }
+export { Header, AboutUs, GetInTouch, Host, Details, Members, Profile, Signin, UserDashboard, AddMember, MemberProfile, UpdateDetails, AuthLayout, Member, Footer }
