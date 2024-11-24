@@ -1,14 +1,15 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function GetInTouch() {
+    const navigate = useNavigate();
     return (
         <>
             <div>
                 <div className="m-3 mb-0 d-flex align-items-center justify-content-center text-body-tertiary">
-                    <Link to="/login" className="text-body-tertiary position-absolute back-top" style={{left: "2%", top: "2%"}}>
+                    <div onClick={() => navigate(-1)} className="text-body-tertiary position-absolute back-top cursor-pointer" style={{left: "2%", top: "2%"}}>
                         <p className="fw-semibold fs-3 m-0">Back</p>
-                    </Link>
+                    </div>
                     <h6 className="fw-semibold fs-3 m-0 mb-4 mt-1">Get in Touch</h6>
                 </div>
             </div>
@@ -28,10 +29,10 @@ function GetInTouch() {
             </div>
 
             <div className="back-bottom">
-                <div className="m-3 mb-0 d-flex justify-content-center text-body-tertiary">
-                    <a href="/login" className="text-body-tertiary">
+                <div className="m-3 mb-0 d-flex justify-content-center text-body-tertiary cursor-pointer">
+                    <div onClick={() => navigate(-1)} className="text-body-tertiary">
                         <p className="fw-semibold fs-3 m-0">Back</p>
-                    </a>
+                    </div>
                 </div>
             </div>
         </>
