@@ -1,0 +1,15 @@
+.back-top{
+    display: none;
+}
+.back-bottom{
+    display: block;
+}
+
+@media (min-width: 992px) {
+    .back-bottom {
+      display: none;
+    }
+    .back-top{
+        display: block;
+    }
+}
