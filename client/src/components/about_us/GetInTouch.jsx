@@ -18,12 +18,13 @@ function GetInTouch() {
                 <div className="d-inline-flex flex-column gap-5 text-center justify-content-center px-5"
                     style={{paddingTop: "40px", paddingBottom: "100px", border: "solid 1px black"}}>
                     <div>
-                        <h2>Email</h2>
+                        <h2>Email us</h2>
                         <h5><a href="mailto:hussainamet@gmail.com">hussainamet@gmail.com</a></h5>
                     </div>
                     <div>
                         <h2>WhatsApp</h2>
-                        <h5><a href="https://wa.me/+918739975253" target="_blank">Chat with Me</a></h5>
+                        <h5><a href="https://wa.me/+919887179382" target="_blank">Hussain Gadisaaz</a></h5>
+                        <h5><a href="https://wa.me/+918739975253" target="_blank">Hussain Amet</a></h5>
                     </div>
                 </div>
             </div>
