@@ -98,8 +98,8 @@ export default function Signin() {
       console.error("Error in logIn:", error);
       if (error?.response?.data === "Your number is blocked") {
         setError("Your number is blocked")
-      } else if (error?.message) {
-        setError(error.message)
+      } else if (error?.response?.data === "Not Found") {
+        setError("Member not found")
       } else {
         setError("An error occurred.");
       }
