@@ -15,7 +15,7 @@
 
   app.use(cors({
     allowedHeaders: '*',
-    origin: '*'
+    origin: config.productionUrl,
   }));
 
   mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
