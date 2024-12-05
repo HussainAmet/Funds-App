@@ -108,6 +108,7 @@ export default function Signin() {
     setTimeout(() => {
       setError("");
     }, 3000);
+    setLoading(false);
   };
 
   useEffect(() => {
