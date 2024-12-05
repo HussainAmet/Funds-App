@@ -46,6 +46,7 @@ function UpdateDetails() {
   const [success, setSuccess] = useState("");
   const [amount, setAmount] = useState("");
   const [page, setPage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { register, handleSubmit } = useForm();
   const { what } = useParams();
@@ -56,6 +57,7 @@ function UpdateDetails() {
   const userData = useSelector((state) => state.member.allMembersDetails);
 
   const updateDetails = async (data) => {
+    setLoading(true);
     setError("");
     const selectedMember = memberData.find(
       (member) => member._id === data.member
@@ -171,6 +173,7 @@ function UpdateDetails() {
         setError("");
       }, 5000);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -301,6 +304,7 @@ function UpdateDetails() {
             "&:disabled": { backgroundColor: "var(--secondary)" },
           }}
           className="px-5 py-2"
+          disabled={loading}
         >
           Submit
         </Button>
