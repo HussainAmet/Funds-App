@@ -183,6 +183,7 @@ export default function Signin() {
                 "&:disabled": { backgroundColor: "var(--secondary)" },
               }}
               className="py-3"
+              disabled={loading}
             >
               {loading ? (
                 <CircularProgressWithLabel
