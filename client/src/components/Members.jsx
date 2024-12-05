@@ -35,6 +35,7 @@ export default function Members() {
   const [actionMemberSaving, setActionMemberSaving] = useState();
   const [actionMemberBlocked, setActionMemberBlocked] = useState();
   const [action, setAction] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -59,6 +60,7 @@ export default function Members() {
   };
 
   const deleteMember = async ({ id, phone, saving }) => {
+    setLoading(true);
     try {
       const member = members.find((member) => member.data.auth._id === id);
       id = member._id
@@ -95,9 +97,11 @@ export default function Members() {
       setSuccess("");
       setError("");
     }, 5000);
+    setLoading(false);
   };
 
   const blockUnblockMember = async ({ id }) => {
+    setLoading(true);
     try {
       
       // mongo
@@ -127,6 +131,7 @@ export default function Members() {
       setSuccess("");
       setError("");
     }, 5000);
+    setLoading(false);
   };
 
   const handleAddMemberClick = () => {
@@ -313,6 +318,7 @@ export default function Members() {
                 setAction(actionMemberBlocked ? "Unblock" : "Block");
                 setOpenConfirmationModal(true);
               }}
+              
             >
               <div className="d-flex align-items-center gap-3">
                 <svg
@@ -336,6 +342,7 @@ export default function Members() {
                 setAction("Delete");
                 setOpenConfirmationModal(true);
               }}
+              
             >
               <div className="d-flex align-items-center gap-3">
                 <svg
@@ -390,6 +397,7 @@ export default function Members() {
                 setOpenConfirmationModal(false);
                 setOpenActionModal(false);
               }}
+              disabled={loading}
             >
               {action} Member
             </Button>
