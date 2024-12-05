@@ -20,6 +20,14 @@
 
   mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
+  app.get('/', (req, res) => {
+    try {
+      res.status(200).send("Welcome to Funds App");
+    } catch (error) {
+      res.status(404).send(error);
+    }
+  })
+
   app.post(`${config.requestBaseUrl}login`, async (req, res) => {
     const number = String(req.body.phone);
     try {

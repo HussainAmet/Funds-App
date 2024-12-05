@@ -9,8 +9,8 @@ import AddMember from "./AddMember";
 import MemberProfile from "./MemberProfile";
 import UpdateDetails from "./UpdateDetails";
 import AuthLayout from "./AuthLayout";
-import Member from './Member'
-import Footer from './footer/Footer'
+import Member from './Member';
+import Footer from './footer/Footer';
 import AboutUs from "./about_us/AboutUs";
 import GetInTouch from "./about_us/GetInTouch";
 
