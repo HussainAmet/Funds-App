@@ -30,6 +30,7 @@ const style = {
 function AddMember(props) {
   const [memberName, setMemberName] = useState();
   const [memberNumber, setMemberNumber] = useState();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -45,6 +46,7 @@ function AddMember(props) {
   });
 
   const addMemberDetails = async (data) => {
+    setLoading(true);
     setError("");
     try {
       // mongodb
@@ -125,6 +127,7 @@ function AddMember(props) {
             "&:hover": { backgroundColor: "var(--primary-200)" },
             "&:disabled": { backgroundColor: "var(--secondary)" },
           }}
+          disabled={loading}
           variant="contained"
           className="fs-6 w-100"
         >
