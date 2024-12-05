@@ -15,6 +15,8 @@ import AddMember from "./AddMember";
 import { useDispatch } from "react-redux";
 import { delMember, blockUnblock } from "../store/memberDetailsSlice";
 import { fireDeleteMember, fireBlockUnblockMember } from "../firebase/auth";
+import axios from "axios";
+import config from "../config/config";
 
 export default function Members() {
   const [input, setInput] = useState("");
@@ -58,13 +60,25 @@ export default function Members() {
 
   const deleteMember = async ({ id, phone, saving }) => {
     try {
-      const member = members.find((member) => member._id === id);
+      const member = members.find((member) => member.data.auth._id === id);
+      id = member._id
       if (member.data.loanRemaining > 0) {
         throw new Error("Member has loan pending");
       }
-      const response = await fireDeleteMember({ id, phone, saving });
-      if (response.data === "ok" && response.status === 200) {
+
+      // mongodb
+      const response = await axios.delete(
+        `${config.poductionUrl}${config.requestBaseUrl}delete-member/${id}/${phone}`
+      );
+
+      if (response.data.message === "ok") {
         dispatch(delMember({ id, saving }));
+      
+      // firebase
+      // const response = await fireDeleteMember({ id, phone, saving });
+      // if (response.data === "ok" && response.status === 200) {
+      //   dispatch(delMember({ id, saving }));
+
         setSuccess("Member Deleted");
       } else {
         throw new Error("Something went wrong");
@@ -85,7 +99,16 @@ export default function Members() {
 
   const blockUnblockMember = async ({ id }) => {
     try {
-      const response = await fireBlockUnblockMember({ id });
+      
+      // mongo
+      const response = await axios.post(
+        `${config.poductionUrl}${config.requestBaseUrl}block-unblock-member`,
+        { _id: id },
+      );
+
+      // firebase
+      // const response = await fireBlockUnblockMember({ id });
+
       if (response.data === "ok" && response.status === 200) {
         dispatch(blockUnblock({ id }));
         setSuccess(`Member ${actionMemberBlocked ? "Unblocked" : "Blocked"}`);
@@ -207,9 +230,9 @@ export default function Members() {
                 <td className="text-center">{member.data.saving}</td>
                 {memberDetails?.auth?.data?.role?.includes("admin") ? (
                   <td className="text-center">
-                    {member?.data?.auth?.data?.role?.includes("admin") ||
-                      member?.data?.auth?.data?.role?.includes("host") ||
-                      member?.data?.auth?.data?.name === "Member" ? (
+                    { member?.data?.auth?.data?.role.includes("admin") ||
+                      member?.data?.auth?.data?.role.includes("host") ||
+                      member?.data?.auth?.data?.phone === "1122334455" ? (
                       "-"
                     ) : (
                       <svg
@@ -219,7 +242,12 @@ export default function Members() {
                         viewBox="0 0 48 48"
                         className="bi bi-person-dash cursor-pointer"
                         onClick={() => {
-                          setActionMemberId(member._id);
+                          // mongo
+                          setActionMemberId(member.data.auth._id);
+
+                          // firebase
+                          // setActionMemberId(member._id);
+
                           setActionMemberName(member.data.auth.data.name);
                           setActionMemberPhone(member.data.auth.data.phone)
                           setActionMemberBlocked(member.data.auth.data.blocked)

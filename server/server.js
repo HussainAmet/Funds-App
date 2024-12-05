@@ -8,57 +8,23 @@
   } from "./schemas/index.js";
   import cors from "cors";
 
-  import path from 'path';
-  import { fileURLToPath } from 'url';
-
   const app = express();
   const port = config.port || 3001;
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  app.use(express.static(path.join(__dirname, 'public')));
-
-  app.use(cors({
-    origin: "http://localhost:5173", // Corrected to match your frontend URL
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true // Important for sending cookies or auth info
-  }));;
-
-  // app.options(`${config.requestBaseUrl}login`, (req, res) => {
-  //   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-  //   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  //   res.sendStatus(200);
-  // });
+  app.use(cors());
 
   mongoose.connect(config.mongodUri, { dbName: "AssociationFunds" });
 
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // Allow requests from your frontend
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Allow specific HTTP methods
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
-    res.header('Access-Control-Allow-Credentials', 'true'); // Important if you're using cookies or authentication
-    next();
-  });
-
-  app.get("/", (req, res) => {
-    try {
-      res.status(200).send("Welcome to Funds App");
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  });
-
   app.post(`${config.requestBaseUrl}login`, async (req, res) => {
-    console.log("123");
     const number = String(req.body.phone);
     try {
-      console.log("456");
       const userData = await userModel.findOne({ "data.phone": number });
       if (userData) {
+        if (userData.data.blocked) {
+          return res.status(404).send("Your number is blocked");
+        }
         if (userData.data.active === true) {
           if (userData.data.role.includes("host")) {
             const member = await memberDetailsModel
@@ -70,7 +36,7 @@
             const members = await memberDetailsModel
               .find({ "data.active": true }, "data")
               .populate("data.auth", "data");
-            res.status(200).send({
+            return res.status(200).send({
               member,
               members: members.sort((name1, name2) => {
                 if (name1.data.auth.data.name < name2.data.auth.data.name) {
@@ -89,7 +55,7 @@
                 { path: "data.totalSavings" },
                 { path: "data.auth", select: "data" },
               ]);
-            res.status(200).send({ member });
+            return res.status(200).send({ member });
           } else {
             res.status(404).send("Not Found");
           }
@@ -97,7 +63,7 @@
           res.status(404).send("Not Found");
         }
       } else {
-        res.status(404).send("Not Found");
+        return res.status(404).send("Not Found");
       }
     } catch (error) {
       throw error;
@@ -114,6 +80,7 @@
           name: name,
           phone: phone,
           role: ["member"],
+          blocked: false,
           active: true,
         },
       });
@@ -134,6 +101,24 @@
       res.status(200).send(member);
     } catch (error) {
       res.status(409).send(error);
+    }
+  });
+
+  app.post(`${config.requestBaseUrl}block-unblock-member`, async (req, res) => {
+    const userId = req.body._id;
+    try {
+      const member = await userModel.find({_id: userId,})
+      await userModel.findOneAndUpdate(
+        {
+          _id: userId,
+        },
+        {
+          "data.blocked": !member[0].data.blocked,
+        }
+      );
+      res.status(200).send("ok");
+    } catch (error) {
+      res.status(400).send(error);
     }
   });
 
@@ -163,7 +148,7 @@
         }
       );
       await totalSavingsModel.findOneAndUpdate(
-        {},
+        {_id: "665765ad1ad330475938a217"},
         {
           $inc: {
             totalSavings: amount,

@@ -15,6 +15,9 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 import { fireLogin } from "../firebase/auth";
+import axios from "axios";
+import config from "../config/config";
+
 function CircularProgressWithLabel(props) {
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>
@@ -56,7 +59,15 @@ export default function Signin() {
     setError("");
     setLoading(true);
     try {
-      const userData = await fireLogin(data.number);
+      // mongodb
+      const userData = await axios.post(
+        `${config.poductionUrl}${config.requestBaseUrl}login`,
+        { phone: data.number },
+      );
+      
+      // firebase
+      // const userData = await fireLogin(data.number);
+
       if (userData.data) {
         dispatch(login());
         dispatch(getMemberDetails({ member: userData.data.member.data }));
@@ -85,7 +96,9 @@ export default function Signin() {
     } catch (error) {
       setLoading(false);
       console.error("Error in logIn:", error);
-      if (error?.message) {
+      if (error?.response?.data === "Your number is blocked") {
+        setError("Your number is blocked")
+      } else if (error?.message) {
         setError(error.message)
       } else {
         setError("An error occurred.");

@@ -58,7 +58,12 @@ const postSlice = createSlice ({
             state.memberDetails.totalSavings.totalSavings = state.memberDetails.totalSavings.totalSavings - action.payload.saving
         },
         blockUnblock: (state, action) => {
-            const foundMember = state.allMembersDetails.find((member) => member._id === action.payload.id)
+            // mongo
+            const foundMember = state.allMembersDetails.find((member) => member.data.auth._id === action.payload.id)
+
+            // firebase
+            // const foundMember = state.allMembersDetails.find((member) => member._id === action.payload.id)
+
             if (foundMember) {
                 foundMember.data.auth.data.blocked = !foundMember.data.auth.data.blocked;
             }

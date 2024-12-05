@@ -11,6 +11,7 @@ const userSchema = new Schema({
         role: [{ type: String, enum: ['host', 'member', 'admin'], required: true }],
         deletedOn: Date,
         active: { type: Boolean, required: true },
+        blocked: { type: Boolean, required: true },
     }
 });
 
